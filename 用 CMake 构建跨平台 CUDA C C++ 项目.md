@@ -157,7 +157,7 @@ enable_language(CUDA)
 
 ### 查找 CUDA 工具包
 
-**`find_package()` 用于添加外部库或软件包**, 如果有不同版本的库文件也可以指定特定的版本号.
+**`find_package()` 用于添加外部库或软件包**, 如果有不同版本的软件包也可以指定版本号.
 - `REQUIRED` : 如果指定的包找不到, CMake 将报错并停止进一步的配置过程
 - `QUIET` : 安静模式. 即使找不到包, CMake 也不会在控制台输出任何警告或错误信息
 - `EXACT` : 查找的包必须完全匹配指定的版本
@@ -170,7 +170,9 @@ find_package(CUDAToolkit)
 
 该命令会导入一个名为 `CUDA::toolkit` 的模块, 并且会给包含在 CUDAToolkit 的一些库定义可选的导入目标. 例如使用 `CUDA::cudart` 来导入 CUDA Runtime 库, 使用 `CUDA::cublas` 来导入 cuBLAS 库等. 在下文链接 CUDA 库文件时会详细介绍.
 
-> 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : FindCUDAToolkit - CMake 3.30.0 Documentation
+>CMake 旧版本中会使用 `find_package(CUDA)` 来查找 CUDA 工具包, 该命令会查找软件包路径并定义一些内置变量, 但在 CMake 3.10 版本后弃用. 在 CMake 3.18 版本后推荐使用 `find_package(CUDAToolkit)` , 能以更便利的方式添加库文件.
+
+> 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : [FindCUDAToolkit - CMake 3.30.0 Documentation](https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html).
 
 ***
 
@@ -370,7 +372,7 @@ $ make
 
 ![](img/用_CMake_构建跨平台_CUDA_C_C++项目/Window使用CMake选择构建的位置.png)
 
-选择完后点击 `Configure` 按钮.
+选择完后点击 `Configure` 按钮进入编译器选项.
 
 ![](img/用_CMake_构建跨平台_CUDA_C_C++项目/Window使用CMake选择configure.png)
 
