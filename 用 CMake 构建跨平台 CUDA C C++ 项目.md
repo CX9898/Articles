@@ -40,9 +40,9 @@ $ nacc kernel.o main.o -o main
 
 CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程序, 并不依赖于某特定编译器. CMake 并不直接建构出最终的软件, 而是产生标准的建构档(如Unix的Makefile或Windows的Visual C++的projects/workspaces), 然后再依一般的建构方式使用.
 
-*CMake 相当于对 Make 进行了封装. 让开发者可以只编写一次构建脚本就能在不同的平台上构建软件, 从而实现"Write once, run everywhere". 使用统一的格式编写配置文件(CMakeLists.txt), 就能够在不同环境和平台上生成所需的本地化 Makefile 和工程文件.*
+**CMake 相当于对 Make 进行了封装. 让开发者可以只编写一次构建脚本就能在不同的平台上构建软件, 从而实现"Write once, run everywhere". 使用统一的格式编写配置文件(CMakeLists.txt), 就能够在不同环境和平台上生成所需的本地化 Makefile 和工程文件.**
 
-*CUDA 也加入了 CMake 支持的各种语言, 平台, 编译器和 IDE.*
+**CUDA 也加入了 CMake 支持的各种语言, 平台, 编译器和 IDE.**
 
 > CMake 广泛用于 C 和 C++ 语言，但它也可用于构建其他语言的源代码.
 
@@ -115,13 +115,17 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 
 ***
 
-### 设置CMake版本
+### 设置 CMake 版本
 
-首先使用 `cmake_minimum_required()` 指定使用的 CMake 最低版本号, 如果使用的 CMake 版本低于指定的最低版本号, 构建过程可能会失败或不兼容. 3.26 版本是一个较新的稳定版本.
+**首先使用 `cmake_minimum_required()` 指定使用的 CMake 最低版本号.**
 
 ```cmake
 cmake_minimum_required(VERSION 3.26)
 ```
+
+3.26 版本是一个较新的稳定版本.
+
+如果使用的 CMake 版本低于指定的最低版本号, 构建过程可能会失败或不兼容. 
 
 >CMake 从3.11版本开始支持 CUDA.
 
@@ -129,17 +133,18 @@ cmake_minimum_required(VERSION 3.26)
 
 ### 创建项目
 
-*`project()` 设置项目名称. 括号里填写项目名, 并将其存储在变量PROJECT_NAME中.*
+**使用 `project()` 创建项目. 括号里填写项目名.**
 
 ```cmake
 project(cmake-cuda-demo)
 ```
+项目名将存储在变量 `PROJECT_NAME` 中.
 
 ***
 
 ### 启用语言支持
 
-*`enable_language()` 用以添加构建项目使用的语言.*
+**`enable_language()` 用以添加构建项目使用的语言.**
 
 ```cmake
 enable_language(CXX)
@@ -148,17 +153,34 @@ enable_language(CUDA)
 
 > 也可以简化在 project() 项目名后添加, 例如: project(cmake-cuda-demo CUDA CXX).
 
-> 在 CMake 3.10 版本前, 不能通过 enable_language(CUDA) 来添加 CUDA, 需要使用 find_package(CUDA)或 find_package(CUDAToolkit)来添加 CUDA 包.
+***
+
+### 查找 CUDA 工具包
+
+**`find_package()` 用于查找外部软件包**, 如果有不同版本的库文件也可以指定特定的版本号.
+- `REQUIRED` : 如果指定的包找不到, CMake 将报错并停止进一步的配置过程
+- `QUIET` : 安静模式. 即使找不到包, CMake 也不会在控制台输出任何警告或错误信息
+- `EXACT` : 查找的包必须完全匹配指定的版本
+
+使用 CUDAToolkit 来查找 CUDA 工具包.
+
+```cmake
+find_package(CUDAToolkit)
+```
+
+该命令会导入一个名为 `CUDA::toolkit` 的模块, 并且会给包含在 CUDAToolkit 的一些库定义可选的导入目标. 例如使用 `CUDA::cudart` 来导入 CUDA Runtime 库, 使用 `CUDA::cublas` 来导入 cuBLAS 库等. 在下面链接 CUDA 库文件时会详细介绍.
+
+> 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : FindCUDAToolkit - CMake 3.30.0 Documentation
 
 ***
 
 ### 设置 C++ 标准
 
-*要使用 C++ 的一些新特性则需要指定 C++ 标准.*
+**要使用 C++ 的一些新特性则需要指定 C++ 标准.**
 
-*`set()` 用于定义/修改变量值.*
+**`set()` 用于定义/修改变量值.**
 
-*通过修改 CMake 内置变量 `CMAKE_CXX_STANDARD` 来设置项目中 C++ 源文件(.cpp等)使用的 C++ 标准, 通过修改变量 `CMAKE_CUDA_STANDARD` 来设置 CUDA 源文件(.cu)使用的 C++ 标准.* 这是因为源文件可能由不同的编译器处理, CUDA 源文件用 nvcc 编译, 而 C++ 源文件可能会用 g++ 等工具编译.
+**通过修改 CMake 内置变量 `CMAKE_CXX_STANDARD` 来设置项目中 C++ 源文件(.cpp等)使用的 C++ 标准, 通过修改变量 `CMAKE_CUDA_STANDARD` 来设置 CUDA 源文件(.cu)使用的 C++ 标准.** 这是因为源文件可能由不同的编译器处理, CUDA 源文件用 nvcc 编译, 而 C++ 源文件可能会用 g++ 等工具编译.
 
 ```cmake
 set(CMAKE_CXX_STANDARD 11)
@@ -171,7 +193,7 @@ set(CMAKE_CUDA_STANDARD 11)
 
 ### 选择 CUDA 架构
 
-*变量 `CMAKE_CUDA_ARCHITECTURES` 是 CMake 3.18 版本中加入的一个变量, 用于指定编译 CUDA 代码时支持的 GPU 架构, 如果要使用新架构的一些特性, 则必须要指定特定的架构.*
+**变量 `CMAKE_CUDA_ARCHITECTURES` 是 CMake 3.18 版本中加入的一个变量, 用于指定编译 CUDA 代码时支持的 GPU 架构, 如果要使用新架构的一些特性, 则必须要指定特定的架构.**
 
 例如要使用Volta架构开始引入的Tensor core, 则需要指定70及以上架构.
 
@@ -188,7 +210,7 @@ GPU架构和对应的参数列表
 
 ### 用变量存储文件夹路径
 
-*添加创建的 include 文件夹路径储存到变量 `INCLUDE_DIR` , 添加 src 文件夹路径储存到变量 `SRC_DIR` .*
+**添加创建的 include 文件夹路径储存到变量 `INCLUDE_DIR` , 添加 src 文件夹路径储存到变量 `SRC_DIR` .**
 
 ```cmake
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
@@ -201,7 +223,7 @@ set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
 
 ### 生成文件列表
 
-*使用 `file(GLOB)` 可以根据指定的模式匹配文件名，并将匹配到的文件列表赋值给一个变量.*
+**使用 `file(GLOB)` 可以根据指定的模式匹配文件名，并将匹配到的文件列表赋值给一个变量.**
 
 读取 src 文件夹的 CUDA, C,  C++源文件储存在变量 `SRC_FILES` 中.
 
@@ -214,7 +236,7 @@ file(GLOB SRC_FILES "${SRC_DIR}/*.c" "${SRC_DIR}/*.cpp" "${SRC_DIR}/*.cc" "${SRC
 ***
 
 #打印信息
-*`message()` 用于在 CMake 的构建过程中输出信息, 可以使用它来打印出变量的值, 或检查调试信息.*
+**`message()` 用于在 CMake 的构建过程中输出信息, 可以使用它来打印出变量的值, 或检查调试信息.**
 
 可以用于检查上个命令中变量 `SRC_FILES` 是否包含了目标源文件.
 
@@ -243,19 +265,20 @@ endif ()
 
 ### 添加构建目标
 
-*`add_executable()` 用以向项目中添加要从源代码构建的可执行目标. 一个配置文件中可以添加多个目标.*
+**`add_executable()` 用以向项目中添加要从源代码构建的可执行目标.**
 
 ```cmake
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 ```
+一个配置文件中可以使用 `add_executable()` 添加多个目标.
 
 ***
 
-### 添加 CUDA 头文件
+### 添加头文件目录
 
-*使用 `target_include_directories()` 可以为目标项目添加头文件目录, 使编译器可以找到目标所依赖的头文件.*
+**使用 `target_include_directories()` 可以为目标项目添加头文件目录, 使编译器可以找到目标所依赖的头文件.**
 
-添加 CUDA 头文件目录和 include 文件夹. `CUDA_INCLUDE_DIRS` 是CUDA包中的内置变量, 储存了CUDA头文件的路径. 再使用前面定义好的 `INCLUDE_DIR` 变量.
+使用前面定义好的 `INCLUDE_DIR` 变量来添加 include 头文件目录.
 
 ```cmake
 target_include_directories(${PROJECT_NAME} PRIVATE ${CUDA_INCLUDE_DIRS})
@@ -287,20 +310,23 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_CUDART_LIBRARY})
 cuBLAS 和 cuSPARSE 等库包含在 CUDA Toolkit 包中, 如果要使用它们, 只需要链接对应的库文件.
 
 ```cmake
+# Linked cuda Runtime library
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cudart)
+
 # Linked cuBLAS library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_cublas_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cublas)
 
 # Linked cuFFT library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_cufft_LIBRARY})
-
-# Linked cuSOLVER library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_cusolver_LIBRARY})
-
-# Linked cuSPARSE library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_cusparse_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cufft)
 
 # Linked cuRAND library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_curand_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::curand)
+
+# Linked cuSOLVER library
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusolver)
+
+# Linked cuSPARSE library
+target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusparse)
 ```
 
 > 如果要使用cuDNN库, 则需要去官网下载 cuDNN: [Downloads cuDNN](https://developer.nvidia.com/cudnn-downloads), 设置好环境, 然后查找 cuDNN 包并添加头文件目录和库文件.
@@ -313,7 +339,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_curand_LIBRARY})
 
 目前很多IDE都支持 CMake, 可以实现一键构建, 比如我现在用的 CLion. 但是有时候还是需要手动构建, 这里用来记录一下.
 
-*Linux(Ubuntu):*
+***
+
+### Linux(Ubuntu)
 
 在项目文件夹中创建并进入 `build` 文件夹, 然后运行 `CMake ..` 和 `make` :
 
@@ -330,7 +358,9 @@ $ make
 
 > 也可以直接使用 `cmake --build build` 来创建 build 文件夹并开始构建.
 
-*window:*
+***
+
+### window
 
 首先选择 CMakeLists.txt 文件所在的路径.
 
@@ -372,7 +402,7 @@ $ make
 
 ### OpenMP
 
-*OpenMP(Open Multi-Processing) 是一个并行API，用于在C/C++程序中方便地实现多线程编程.* 如果要加入OpenMP库, 则需要先找到 OpenMP 包再添加 OpenMP 库文件.
+**OpenMP(Open Multi-Processing) 是一个并行API，用于在C/C++程序中方便地实现多线程编程.** 如果要加入OpenMP库, 则需要先找到 OpenMP 包再添加 OpenMP 库文件.
 
 ```cmake
 # Find OpenMP package
@@ -381,11 +411,6 @@ find_package(OpenMP REQUIRED)
 # Linked OpenMP library
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 ```
-
-`find_package()` 用于添加外部库或软件包, 如果有不同版本的库文件也可以指定特定的版本号.
-- `REQUIRED` : 如果指定的包找不到，CMake 将报错并停止进一步的配置过程。这是确保项目依赖性的关键参数
-- `QUIET` : 安静模式. 即使找不到包, CMake 也不会在控制台输出任何警告或错误信息。这通常用于可选依赖项
-- `MODULE` : 告诉 CMake 查找的是 CMake 模块文件(.cmake 文件), 而不是包配置文件
 
 > 注意: OpenMP主要用于在 host 端并行化 CPU 代码, 需要在C++源文件中使用.
 
