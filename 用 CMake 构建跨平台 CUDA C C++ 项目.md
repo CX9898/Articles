@@ -333,7 +333,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusparse)
 
 > 如果要使用cuDNN库, 则需要去官网下载 cuDNN: [Downloads cuDNN](https://developer.nvidia.com/cudnn-downloads), 设置好环境, 然后查找 cuDNN 包并添加头文件目录和库文件.
 
-以上源码可在Git上获取: [GitHub - CX9898/cmake-cuda-sample](https://github.com/CX9898/cmake-cuda-sample)
+以上源码可在 GitHub 上获取 : [GitHub - CX9898/cmake-cuda-sample](https://github.com/CX9898/cmake-cuda-sample)
 
 ***
 
