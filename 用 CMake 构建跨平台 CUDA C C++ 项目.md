@@ -32,13 +32,13 @@ $ nacc kernel.o main.o -o main
 
 使用 g++ 编译 C++ 项目时同样有这个问题. 为了实现自动编译, 发明了 Make 这个程序. 要使用 Make, 需要创建 Makefile 文件并在文件中写出不同文件之间的依赖关系和生成各文件的规则, 然后只需要输入一个 `make` 命令就能完成构建.
 
-然而 Make 在 Unix 类系统上是通用的, 但是在 Windows 则并不是. 并且Make工具也有分好几种, 例如 GNU Make, QT 的 qmake, 微软的 MS nmake 等等. 这些 Make 工具遵循着不同的规范和标准, 所执行的 Makefile 格式也千差万别. 如果软件想跨平台, 则必须要保证能够在不同平台编译, 要使用上面的 Make 工具自动完成构建, 就得为每一种标准都分别写一次 Makefile文件.
+然而 Make 在 Unix 类系统上是通用的, 但是在 Windows 则并不是. 并且Make工具也有分好几种, 例如 GNU Make, QT 的 qmake, 微软的 MS nmake 等等. 这些 Make 工具遵循着不同的规范和标准, 所执行的 Makefile 格式也千差万别. 如果软件想跨平台, 则必须要保证能够在不同平台编译, 要使用上面的 Make 工具自动完成构建, 就得为每一种标准都分别写一次 Makefile 文件.
 
 为了解决以上这个问题, 就有了跨平台的CMake.
 
 ![Cross-platform Make](img/用_CMake_构建跨平台_CUDA_C_C++项目/cross-platform Make.png)
 
-CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程序, 并不依赖于某特定编译器. CMake 并不直接建构出最终的软件, 而是产生标准的建构档(如Unix的Makefile或Windows的Visual C++的projects/workspaces), 然后再依一般的建构方式使用.
+CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程序, 并不依赖于某特定编译器. CMake 并不直接建构出最终的软件, 而是产生标准的建构档(如 Unix 的 Makefile 或 Windows 的 Visual C++ 的 projects/workspaces), 然后再依一般的建构方式使用.
 
 **CMake 相当于对 Make 进行了封装. 让开发者可以只编写一次构建脚本就能在不同的平台上构建软件, 从而实现"Write once, run everywhere". 使用统一的格式编写配置文件(CMakeLists.txt), 就能够在不同环境和平台上生成所需的本地化 Makefile 和工程文件.**
 
@@ -107,8 +107,8 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 ## CMakeLists.txt
 
 使用 CMake 构建一个最简单的项目只需要在配置文件(CMakeLists.txt)中包含三个基本命令:
-- `cmake_minimum_required()` : 指定CMake最低版本号
-- `project()` : 设置项目名称
+- `cmake_minimum_required()` : 指定 CMake 最低版本号
+- `project()` : 创建项目
 - `add_executable()` : 使用指定的源代码文件创建可执行文件
 - 
 下面一步一步讲解如何在配置文件中构建一个 CUDA C/C++项目, 并指出构建 CUDA 项目额外需要的步骤.
@@ -157,7 +157,7 @@ enable_language(CUDA)
 
 ### 查找 CUDA 工具包
 
-**`find_package()` 用于查找外部软件包**, 如果有不同版本的库文件也可以指定特定的版本号.
+**`find_package()` 用于添加外部库或软件包**, 如果有不同版本的库文件也可以指定特定的版本号.
 - `REQUIRED` : 如果指定的包找不到, CMake 将报错并停止进一步的配置过程
 - `QUIET` : 安静模式. 即使找不到包, CMake 也不会在控制台输出任何警告或错误信息
 - `EXACT` : 查找的包必须完全匹配指定的版本
@@ -168,7 +168,7 @@ enable_language(CUDA)
 find_package(CUDAToolkit)
 ```
 
-该命令会导入一个名为 `CUDA::toolkit` 的模块, 并且会给包含在 CUDAToolkit 的一些库定义可选的导入目标. 例如使用 `CUDA::cudart` 来导入 CUDA Runtime 库, 使用 `CUDA::cublas` 来导入 cuBLAS 库等. 在下面链接 CUDA 库文件时会详细介绍.
+该命令会导入一个名为 `CUDA::toolkit` 的模块, 并且会给包含在 CUDAToolkit 的一些库定义可选的导入目标. 例如使用 `CUDA::cudart` 来导入 CUDA Runtime 库, 使用 `CUDA::cublas` 来导入 cuBLAS 库等. 在下文链接 CUDA 库文件时会详细介绍.
 
 > 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : FindCUDAToolkit - CMake 3.30.0 Documentation
 
@@ -295,19 +295,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 
 ### 链接 CUDA 库文件
 
-添加完头文件还需要使用 `target_link_libraries()` 指定目标项目在链接时需要使用的库文件.
+**使用 `target_link_libraries()` 指定目标项目在链接时需要使用的库文件.**
 
-使用储存了 CUDA 库文件目录的变量 `CUDA_CUDART_LIBRARY` 来链接 CUDA 库文件.
+CUDA Runtime, cuBLAS 和 cuSPARSE 等库包含在 [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 包中. 如果要使用它们, 只需要链接对应的库文件.
+
+例如使用储存了 CUDA Runtime 库文件的变量 CUDA_cudart_LIBRARY 来链接 CUDA Runtime 库文件.
 
 ```cmake
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_CUDART_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_cudart_LIBRARY})
 ```
 
-> `target_link_libraries()` 也可以在一条命令中添加多个库文件, 中间用空格分开.
-
-> 全局添加使用 `include_directories()`.
-
-cuBLAS 和 cuSPARSE 等库包含在 CUDA Toolkit 包中, 如果要使用它们, 只需要链接对应的库文件.
+也可以直接使用 CMake 中 [FindCUDAToolkit](https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html#cuda-toolkit-rt-lib) 模块定义好的目标来导入.
 
 ```cmake
 # Linked cuda Runtime library
@@ -328,6 +326,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusolver)
 # Linked cuSPARSE library
 target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusparse)
 ```
+
+并且使用模块定义好的目标来导入库文件的同时也会自动添加相关的头文件, 使 C++ 源文件中也可以调用.
 
 > 如果要使用cuDNN库, 则需要去官网下载 cuDNN: [Downloads cuDNN](https://developer.nvidia.com/cudnn-downloads), 设置好环境, 然后查找 cuDNN 包并添加头文件目录和库文件.
 
@@ -412,9 +412,9 @@ find_package(OpenMP REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 ```
 
-> 注意: OpenMP主要用于在 host 端并行化 CPU 代码, 需要在C++源文件中使用.
+> 注意 : OpenMP 主要用于在 Host 端并行化 CPU 代码, 需要在 C++ 源文件中使用.
 
-**添加其他第三方库(例如Boost, HDF5)时一般也是按照先用 find_package() 找到对应软件包, 再用 target_include_directories() 和  target_link_libraries() 添加对应的头文件和库文件.**
+**添加其他第三方库(例如 Boost, HDF5)时一般也是按照先用 `find_package()` 找到对应软件包, 再用 `target_include_directories()` 和  `target_link_libraries()` 添加对应的头文件和库文件.**
 
 ***
 
