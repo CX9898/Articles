@@ -170,7 +170,7 @@ find_package(CUDAToolkit)
 
 该命令会导入一个名为 `CUDA::toolkit` 的模块, 并且会给包含在 CUDAToolkit 的一些库定义可选的导入目标. 例如使用 `CUDA::cudart` 来导入 CUDA Runtime 库, 使用 `CUDA::cublas` 来导入 cuBLAS 库等. 在下文链接 CUDA 库文件时会详细介绍.
 
->CMake 旧版本中会使用 `find_package(CUDA)` 来查找 CUDA 工具包, 该命令会查找软件包路径并定义一些内置变量, 但在 CMake 3.10 版本后弃用. 在 CMake 3.18 版本后推荐使用 `find_package(CUDAToolkit)` , 能以更便利的方式添加库文件.
+>CMake 旧版本中会使用 `find_package(CUDA)` 来查找 CUDA 工具包, 该命令会查找软件包路径并定义一些内置变量, 但在 CMake 3.10 版本后弃用. 在 CMake 3.17 版本后推荐使用 `find_package(CUDAToolkit)` , 能以更便利的方式添加库文件.
 
 > 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : [FindCUDAToolkit - CMake 3.30.0 Documentation](https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html).
 
