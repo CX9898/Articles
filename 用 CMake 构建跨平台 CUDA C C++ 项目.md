@@ -358,7 +358,7 @@ $ make
 
 ![](img/用_CMake_构建跨平台_CUDA_C_C++项目/Linux构建结果.png)
 
-> 也可以直接使用 `cmake --build build` 来创建 build 文件夹并开始构建.
+> 也可以直接在项目文件夹中使用 `cmake . -B build` 来创建 build 文件夹并开始构建 Makefile 文件, 再使用 `cmake --build build` 在 build 文件夹中构建项目可执行文件.
 
 ***
 
