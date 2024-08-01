@@ -8,7 +8,7 @@
 
 NVIDIA 官方 [cuda-samples](https://github.com/NVIDIA/cuda-samples) 项目和一些论文的源码中都使用的是 Make 构建, 导致每换一台主机都得重新设置, 太麻烦了. 所以写一遍 CMake 方便构建, 同时顺便记录一下要点.  
 
-本文先解释了为什么要使用 CMake 来构建 CUDA C/C++ 项目. 创建一个项目框架, 一步一步讲解如何手动使用 CMake 构建一个 CUDA C/C++ 项目, 并指出构建 CUDA 项目额外需要的步骤.
+本文先解释了为什么要使用 CMake 来构建 CUDA C/C++ 项目. 创建一个项目框架, 一步一步讲解如何手动使用 CMake 构建一个 CUDA C/C++ 项目, 并详细解释构建 CUDA 项目额外需要的步骤.
 
 ***
 
@@ -100,7 +100,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 └─CMakeLists.txt
 ```
 
-> 要编译其他项目只需要将项目源文件复制到 src 文件夹, 头文件复制到 include 文件夹, 并稍作修改 CMakeLists.txt 文件就行.
+> 要编译其他项目只需要将项目源文件复制到 src 文件夹, 头文件复制到 include 文件夹, 再根据使用的 cuda 库在 CMakeLists.txt 文件中开启对应的选项就可以.
 
 ***
 
