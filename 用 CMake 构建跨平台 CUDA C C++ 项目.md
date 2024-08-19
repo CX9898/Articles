@@ -267,16 +267,32 @@ endif ()
 
 ### 添加构建目标
 
-**`add_executable()` 用以向项目中添加要从源代码构建的可执行目标.**
+**`add_executable()` 用以向项目中添加要构建的可执行目标.** 使用项目名作为可执行目标的名称.
 
 ```cmake
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME})
 ```
-一个配置文件中可以使用 `add_executable()` 添加多个目标.
+一个配置文件中可以使用 `add_executable()` 添加多个构建目标.
 
 ***
 
-### 添加头文件目录
+### 向构建目标链接源文件
+
+**使用 target_sources() 来向指定的构建目标链接源文件.** 使用前面"生成文件列表中"定义好的变量 `SRC_FILES` 来将 src 文件夹中的所有源文件链接到构建目标.
+
+```cmake
+target_sources(${PROJECT_NAME} PRIVATE ${SRC_FILES})
+```
+
+- `PUBLIC` : 源文件将被添加到目标的公共接口中, 这意味着任何依赖于这个构建目标的其它目标也将包含这些源文件
+- `INTERFACE` : 源文件将被添加到构建目标的接口中, 但不会在编译时实际链接到目标. 它们仅用于声明接口
+- `PRIVATE` : 源文件将仅被添加到构建目标中, 不会传递给依赖这个构建目标的其它目标
+
+> 也可以简化在 `add_executable()` 中构建目标名后添加. 例如: `add_executable(${PROJECT_NAME} PRIVATE${SRC_FILES})` .
+
+---
+
+### 向构建目标添加头文件目录
 
 **使用 `target_include_directories()` 可以为目标项目添加头文件目录, 使编译器可以找到目标所依赖的头文件.**
 
@@ -295,7 +311,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 
 ***
 
-### 链接 CUDA 库文件
+### 向构建目标链接 CUDA 库文件
 
 **使用 `target_link_libraries()` 指定目标项目在链接时需要使用的库文件.**
 
