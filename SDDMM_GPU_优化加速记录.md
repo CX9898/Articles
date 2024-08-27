@@ -6,8 +6,9 @@
 
 使用 Tensor core 直接对密集矩阵乘法进行计算, 计算时间
 
-### 问题:
+### 过程中发现的问题
 
+#### 1:
 函数 `__shfl_xor` 在 cuda 后续版本已经弃用, 应该改为使用 `__shfl_xor_sync`
 
 但是发现使用 `__shfl_xor` 和 `__shfl_xor_sync` 的结果不一致
@@ -22,6 +23,35 @@ sm1 += __shfl_xor_sync(0xFFFFFFFF, sm1, 1); // 使用shuffle指令. 使线程0�
 sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 ```
 
+#### 2:
+核函数中加入了 `if()` 判断语句, 就算永远执行单一分支也比不加入 `if()` 判断语句时耗时久
+
+加入判断语句(用时: 31.388 ms):
+
+```c++
+    const int ldp = N;
+    const auto pOffsetPtr = matrixP + pRowId * ldp + pColId;
+    const float sparsity = calculateMatrixTileSparsity(WMMA_M, WMMA_N, ldp, MatrixStorageOrder::row_major, pOffsetPtr);
+    if (sparsity < 0) { // Always false
+
+    } else {
+        matrixTileMultiplicationUseTensorCore(pRowId, pColId, M, N, K, matrixA, matrixB, matrixS, matrixP);
+    }
+```
+
+不加入判断语句(用时: 21.8441 ms):
+
+```c++
+    const int ldp = N;
+    const auto pOffsetPtr = matrixP + pRowId * ldp + pColId;
+    const float sparsity = calculateMatrixTileSparsity(WMMA_M, WMMA_N, ldp, MatrixStorageOrder::row_major, pOffsetPtr);
+//    if (sparsity < 0) { // Always false
+
+//    } else {
+        matrixTileMultiplicationUseTensorCore(pRowId, pColId, M, N, K, matrixA, matrixB, matrixS, matrixP);
+//    }
+```
+
 ---
 
 ### 最初版本 测试结果
@@ -33,17 +63,18 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 16 × 16 × 16
 
+
 | GPU : 4090, Debug build                                              | sddmm_isratnisa |  sddmm_zcx  |
-|:---------------------------------------------------------------------|:---------------:|:-----------:|
-| M : 1504, N : 1504, K : 256,<br/>nnz : 746316, sparsity : 67.0066%   |   2.13123 ms    | 0.059168 ms |
-| M : 12432, N : 12432, K : 256,<br/>nnz : 746316, sparsity : 99.5171% |   0.419488 ms   | 3.06074 ms  |
-| M : 8000, N : 8000, K : 256,<br/>nnz : 640000, sparsity : 99%        |   0.488832 ms   |  1.2759 ms  |
-| M : 8000, N : 8000, K = 256,<br/>nnz: 1280000, sparsity : 98%        |   0.817376 ms   |    위에 같다    |
-| M : 8000, N : 8000, K : 256,<br/>nnz : 1632000, sparsity : 97.45%    |   0.998016 ms   |    위에 같다    |
-| M : 8000, N : 8000, K : 256,<br/>nnz : 1920000, sparsity : 97%       |   1.14563 ms    |    위에 같다    |
-| M : 8000, N : 8000, K : 256,<br/>nnz : 2240000, sparsity : 96.5%     |   1.30128 ms    |    위에 같다    |
-| M : 8000, N : 8000, K : 256,<br/> nnz : 2560000, sparsity : 96%      |   1.47882 ms    |    위에 같다    |
-| M : 8000, N : 8000, K : 256,<br/>nnz : 6400000, sparsity : 90%       |   5.10989 ms    |    위에 같다    |
+| :------------------------------------------------------------------- | :-------------: | :---------: |
+| M : 1504, N : 1504, K : 256,<br/>nnz : 746316, sparsity : 67.0066%   |   2.13123 ms   | 0.059168 ms |
+| M : 12432, N : 12432, K : 256,<br/>nnz : 746316, sparsity : 99.5171% |   0.419488 ms   | 3.06074 ms |
+| M : 8000, N : 8000, K : 256,<br/>nnz : 640000, sparsity : 99%       |   0.488832 ms   |  1.2759 ms  |
+| M : 8000, N : 8000, K = 256,<br/>nnz: 1280000, sparsity : 98%        |   0.817376 ms   |  위에 같다  |
+| M : 8000, N : 8000, K : 256,<br/>nnz : 1632000, sparsity : 97.45%    |   0.998016 ms   |  위에 같다  |
+| M : 8000, N : 8000, K : 256,<br/>nnz : 1920000, sparsity : 97%       |   1.14563 ms   |  위에 같다  |
+| M : 8000, N : 8000, K : 256,<br/>nnz : 2240000, sparsity : 96.5%     |   1.30128 ms   |  위에 같다  |
+| M : 8000, N : 8000, K : 256,<br/> nnz : 2560000, sparsity : 96%      |   1.47882 ms   |  위에 같다  |
+| M : 8000, N : 8000, K : 256,<br/>nnz : 6400000, sparsity : 90%      |   5.10989 ms   |  위에 같다  |
 
 #### Release build
 
@@ -51,8 +82,9 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 - GPU : 4090
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 
+
 | 4090 |  |  |
-|------|--|--|
+| ---- | - | - |
 |      |  |  |
 |      |  |  |
 |      |  |  |
@@ -68,8 +100,9 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 16 × 16 × 16
 
-| GPU:4090, debug build, row_major,16×16×16                            | sddmm_isratnisa | sddmm_zcx   |
-|----------------------------------------------------------------------|-----------------|-------------|
+
+| GPU:4090, debug build, row_major,16×16×16                         | sddmm_isratnisa | sddmm_zcx   |
+| -------------------------------------------------------------------- | --------------- | ----------- |
 | M : 3000, N : 7000, K : 256,<br/>nnz : 313110, sparsity : 98.51%     | 0.508448 ms     | 0.415744 ms |
 | M : 2000, N : 12000, K : 256, nnz : 746000, sparsity : 96.8917%      | 1.59091 ms      | 0.448512 ms |
 | M : 300000, N : 103000, K : 256, nnz : 69000000, sparsity : 99.7767% | 26.6559 ms      |             |
@@ -97,8 +130,9 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 32×8×16
 
-| GPU:4090, debug build, row_major, 32×8×16                            | sddmm_isratnisa | sddmm_zcx   |
-|----------------------------------------------------------------------|-----------------|-------------|
+
+| GPU:4090, debug build, row_major, 32×8×16                         | sddmm_isratnisa | sddmm_zcx   |
+| -------------------------------------------------------------------- | --------------- | ----------- |
 | M : 3000, N : 7000, K : 256,<br/>nnz : 313110, sparsity : 98.51%     | 0.508448 ms     | 0.372704 ms |
 | M : 2000, N : 12000, K : 256, nnz : 746000, sparsity : 96.8917%      | 1.59091 ms      | 0.44336 ms  |
 | M : 300000, N : 103000, K : 256, nnz : 69000000, sparsity : 99.7767% | 26.6559 ms      |             |
@@ -128,8 +162,9 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 8×32×16
 
-| GPU:4090, debug build, row_major, 8×32×16                            | sddmm_isratnisa | sddmm_zcx   |
-|----------------------------------------------------------------------|-----------------|-------------|
+
+| GPU:4090, debug build, row_major, 8×32×16                         | sddmm_isratnisa | sddmm_zcx   |
+| -------------------------------------------------------------------- | --------------- | ----------- |
 | M : 3000, N : 7000, K : 256,<br/>nnz : 313110, sparsity : 98.51%     | 0.508448 ms     | 0.567232 ms |
 | M : 2000, N : 12000, K : 256, nnz : 746000, sparsity : 96.8917%      | 1.59091 ms      | 0.577088 ms |
 | M : 300000, N : 103000, K : 256, nnz : 69000000, sparsity : 99.7767% | 26.6559 ms      |             |
@@ -150,4 +185,4 @@ sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 
 由于将稀疏矩阵按照0也储存的方式储存, 导致矩阵太大的情况下内存分配错误, 使得计算失败
 
-使用 32×8×16 的维度 比 16×16×16 和 32×8×16 更慢了
+使用 8×32×16 的维度 比 16×16×16 和 32×8×16 更慢了
