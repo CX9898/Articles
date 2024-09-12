@@ -84,6 +84,16 @@ Func comp_sddmm_gpu time : 13.0769 ms
 
 从 grid 的数量上看, 改成128和4时, grid 数量大大增加了, 原先 2313 × 73 = 168849, 变成 579 × 579 = 335241
 
+#### 4: `print()`
+
+在CPU中使用 `printf()` 函数会隐式转换, 而在GPU中使用 `printf()` 函数不会隐式转换, 需要显示转换. 例如:
+
+```c++
+    size_t numWarpX, numWarpY, numWarps;
+printf(" numWarpX = %d, numWarpY = %d, numWarps = %d\n",
+static_cast<int>(numWarpX), static_cast<int>(numWarpY), static_cast<int>(numWarps));
+```
+
 ---
 
 ### 最初版本 测试结果
@@ -510,5 +520,39 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
     }
 }
 ```
+
+---
+
+### 使用COO格式储存稀疏矩阵进行运算(第二版)
+
+针对 `for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx)` 循环进行了优化,
+现在是 `for (int matrixPIdx = matrixTileIndex[warpId]; matrixPIdx < matrixTileIndex[warpId + 1]; ++matrixPIdx)`
+
+#### 测试结果 行主序储存 16×16×16
+
+- GPU : 4090
+- Debug build
+- matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
+- WMMA : 16 × 16 × 16
+
+| GPU:4090, debug build, row_major,16×16×16                            | sddmm_isratnisa | sddmm_zcx |
+|----------------------------------------------------------------------|-----------------|-----------|
+| M : 3000, N : 7000, K : 256, nnz : 313110, sparsity : 98.51%         | 0.508448 ms     |           |
+| M : 2000, N : 12000, K : 256, nnz : 746000, sparsity : 96.8917%      | 1.59091 ms      |           |
+| M : 300000, N : 103000, K : 256, nnz : 69000000, sparsity : 99.7767% | 26.6559 ms      |           |
+| M : 35000, N : 35000, K : 256, nnz : 422000, sparsity : 99.9656%     | 0.237888 ms     |           |
+| M : 549000, N : 549000, K : 256, nnz : 926000, sparsity : 99.9997%   | 2.61411 ms      |           |
+| M : 426000, N : 426000, K : 256, nnz : 1000000, sparsity : 99.9995%  | 2.41718 ms      |           |
+| M : 37000, N : 37000, K : 256, nnz : 368000, sparsity : 99.9731%     | 0.234112 ms     |           |
+| M : 4000, N : 4000, K : 256, nnz : 88000, sparsity : 99.45%          | 0.172064 ms     |           |
+| M : 106000, N : 106000, K : 256, nnz : 3000000, sparsity : 99.9733%  | 1.97805 ms      |           |
+| M : 685000, N : 685000, K : 256, nnz : 8000000, sparsity : 99.9983%  | 12.3796 ms      |           |
+| M : 916000, N : 916000, K : 256, nnz : 5000000, sparsity : 99.9994%  | 9.60342 ms      |           |
+| M : 326000, N : 326000, K : 256, nnz : 1000000, sparsity : 99.9991%  | 2.11952 ms      |           |
+| M : 197000, N : 197000, K : 256, nnz : 2000000, sparsity : 99.9948%  | 2.10243 ms      |           |
+| M : 390000, N : 390000, K : 256, nnz : 2000000, sparsity : 99.9987%  | 3.45181 ms      |           |
+| M : 260000, N : 260000, K : 256, nnz : 4000000, sparsity : 99.9941%  | 4.01792 ms      |           |
+| M : 241000, N : 241000, K : 256, nnz : 561000, sparsity : 99.999%    | 1.28944 ms      |           |
+| M : 36000, N : 36000, K : 256, nnz : 4000000, sparsity : 99.6914%    | 1.33123 ms      |           |
 
 ---
