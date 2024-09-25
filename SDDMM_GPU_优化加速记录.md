@@ -531,7 +531,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 #### 测试结果 行主序储存 16×16×16
 
 - GPU : 4090
-- Debug build
+- Release build
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 16 × 16 × 16
 
@@ -563,5 +563,32 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_50000_50000_75000000   | 97%      | 29.3539         | 24.4852   | 980.465         | 768576    | 1009.82   | 768600 | 
 | matrix_50000_50000_50000000   | 98%      | 19.8487         | 24.0033   | 648.781         | 509691    | 668.629   | 509715 | 
 | matrix_50000_50000_25000000   | 99%      | 10.4242         | 22.1125   | 323.567         | 255493    | 333.991   | 255515 |  
+
+---
+
+### 在上一版的基础上优化整理数据的函数(openTensorCoreModeForSampled())
+
+#### 测试结果 行主序储存 16×16×16
+
+- GPU : 4090
+- Release build
+- matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
+- WMMA : 16 × 16 × 16
+
+| M = 10000, N = 10000, k = 256 | sparsity | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
+|-------------------------------|----------|-----------------|-----------|-----------------|-----------|-----------|-----|
+| matrix_10000_10000_5000000    | 95%      |                 |           |                 |           |           |     | 
+| matrix_10000_10000_4000000    | 96%      |                 |           |                 |           |           |     | 
+| matrix_10000_10000_3000000    | 97%      |                 |           |                 |           |           |     | 
+| matrix_10000_10000_2000000    | 98%      |                 |           |                 |           |           |     | 
+| matrix_10000_10000_1000000    | 99%      |                 |           |                 |           |           |     | 
+
+| M = 50000, N = 50000, k = 256 | sparsity | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
+|-------------------------------|----------|-----------------|-----------|-----------------|-----------|-----------|-----|
+| matrix_50000_50000_125000000  | 95%      |                 |           |                 |           |           |     | 
+| matrix_50000_50000_100000000  | 96%      |                 |           |                 |           |           |     | 
+| matrix_50000_50000_75000000   | 97%      |                 |           |                 |           |           |     | 
+| matrix_50000_50000_50000000   | 98%      |                 |           |                 |           |           |     | 
+| matrix_50000_50000_25000000   | 99%      |                 |           |                 |           |           |     | 
 
 ---
