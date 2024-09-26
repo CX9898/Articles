@@ -568,6 +568,8 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ### 在上一版的基础上优化整理数据的函数(openTensorCoreModeForSampled())
 
+使用共享内存. pipelining方法. 一个线程计算一个warp中的.
+
 #### 测试结果 行主序储存 16×16×16
 
 - GPU : 4090
