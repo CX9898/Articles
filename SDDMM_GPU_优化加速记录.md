@@ -568,9 +568,10 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ### 在上一版的基础上优化整理数据的函数(openTensorCoreModeForSampled())
 
-使用共享内存. pipelining方法. 一个线程计算一个warp中的.
+#### 使用共享内存: pipelining方法.
+一个线程计算一个warp中的.
 
-#### 测试结果 行主序储存 16×16×16
+##### 测试结果 行主序储存 16×16×16
 
 - GPU : 4090
 - Release build
@@ -592,5 +593,18 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_50000_50000_75000000   | 97%      |                 |           |                 |           |           |     | 
 | matrix_50000_50000_50000000   | 98%      |                 |           |                 |           |           |     | 
 | matrix_50000_50000_25000000   | 99%      |                 |           |                 |           |           |     | 
+
+---
+
+#### 使用共享内存: 分割处理
+
+##### 测试结果 行主序储存 16×16×16
+
+- GPU : 4090
+- Release build
+- matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
+- WMMA : 16 × 16 × 16
+
+
 
 ---
