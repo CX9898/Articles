@@ -569,6 +569,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 ### 在上一版的基础上优化整理数据的函数(openTensorCoreModeForSampled())
 
 #### 使用共享内存: pipelining方法.
+
 一个线程计算一个warp中的.
 
 ##### 测试结果 行主序储存 16×16×16
@@ -578,13 +579,13 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 16 × 16 × 16
 
-| M = 10000, N = 10000, k = 256 | sparsity | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|-------------------------------|----------|-----------------|-----------|-----------------|-----------|-----------|-----|
-| matrix_10000_10000_5000000    | 95%      |                 |           |                 |           |           |     | 
-| matrix_10000_10000_4000000    | 96%      |                 |           |                 |           |           |     | 
-| matrix_10000_10000_3000000    | 97%      |                 |           |                 |           |           |     | 
-| matrix_10000_10000_2000000    | 98%      |                 |           |                 |           |           |     | 
-| matrix_10000_10000_1000000    | 99%      |                 |           |                 |           |           |     | 
+| M = 10000, N = 10000       | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
+|----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|---------|
+| matrix_10000_10000_5000000 | 95%      | 256  | 2.22109         | 1.02646   | 42.8288         | 1860.13   | 45.0571   | 1861.15 | 
+| matrix_10000_10000_5000000 | 95%      | 500  | 4.94931         | 1.02646   | 49.456          | 1860.13   | 54.4053   | 1861.15 | 
+| matrix_10000_10000_5000000 | 95%      | 1000 | 9.83683         | 0.981952  | 50.9666         | 1114.52   | 60.8035   | 1115.5  |
+| matrix_10000_10000_5000000 | 95%      | 3000 | 29.3189         |           | 49.9806         |           | 79.2995   |         | 
+| matrix_10000_10000_5000000 | 95%      | 5000 | 51.2411         |           | 50.1555         |           | 101.397   |         | 
 
 | M = 50000, N = 50000, k = 256 | sparsity | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
 |-------------------------------|----------|-----------------|-----------|-----------------|-----------|-----------|-----|
@@ -604,7 +605,5 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 - Release build
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
 - WMMA : 16 × 16 × 16
-
-
 
 ---
