@@ -861,6 +861,8 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ##### 测试结果 行主序储存 16×16×16
 
+###### matrix 5000 5000
+
 - GPU : 4090
 - Release build
 - matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
@@ -927,6 +929,11 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_2500 | 99.99%   | 5000 | 1.33            | 0.57      | 0.12            | 1.65      | 1.46      | 2.22 |
 
 ###### matrix 10000 10000
+
+- GPU : 4090
+- Release build
+- matrixA(half) : row_major, matrixB(half) : row_major, matrixP(float) : row_major
+- WMMA : 16 × 16 × 16
 
 |                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|---------|
