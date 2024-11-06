@@ -2,13 +2,9 @@
 
 ---
 
-## 加入 Tensor core
+## 过程中发现的问题或优化点
 
-使用 Tensor core 直接对密集矩阵乘法进行计算, 计算时间
-
-### 过程中发现的问题或优化点
-
-#### 1:
+### 1: 论文源码中使用的函数 `__shfl_xor` 在 cuda 后续版本已经弃用, 应该改为使用 `__shfl_xor_sync`
 
 函数 `__shfl_xor` 在 cuda 后续版本已经弃用, 应该改为使用 `__shfl_xor_sync`
 
@@ -24,7 +20,7 @@ sm1 += __shfl_xor_sync(0xFFFFFFFF, sm1, 1); // 使用shuffle指令. 使线程0�
 sm2 += __shfl_xor_sync(0xFFFFFFFF, sm2, 1);
 ```
 
-#### 2:
+### 2: 核函数中加入了 `if()` 判断语句, 就算永远执行单一分支也比不加入 `if()` 判断语句时耗时久
 
 核函数中加入了 `if()` 判断语句, 就算永远执行单一分支也比不加入 `if()` 判断语句时耗时久
 
@@ -54,7 +50,7 @@ matrixTileMultiplicationUseTensorCore(pRowId, pColId, M, N, K, matrixA, matrixB,
 //    }
 ```
 
-#### 3:
+### 3: blockDim 的尺寸改变的话时间大幅度降低
 
 blockDim 的尺寸改变的话时间大幅度降低.
 
@@ -84,15 +80,45 @@ Func comp_sddmm_gpu time : 13.0769 ms
 
 从 grid 的数量上看, 改成128和4时, grid 数量大大增加了, 原先 2313 × 73 = 168849, 变成 579 × 579 = 335241
 
-#### 4: `print()`
+### 4: GPU端 `print()` 函数不进行隐式转换问题
 
 在CPU中使用 `printf()` 函数会隐式转换, 而在GPU中使用 `printf()` 函数不会隐式转换, 需要显示转换. 例如:
 
 ```c++
-    size_t numWarpX, numWarpY, numWarps;
+size_t numWarpX, numWarpY, numWarps;
 printf(" numWarpX = %d, numWarpY = %d, numWarps = %d\n",
-static_cast<int>(numWarpX), static_cast<int>(numWarpY), static_cast<int>(numWarps));
+    numWarpX, numWarpY, numWarps);
 ```
+
+需要改为:
+
+```c++
+size_t numWarpX, numWarpY, numWarps;
+printf(" numWarpX = %d, numWarpY = %d, numWarps = %d\n",
+    static_cast<int>(numWarpX), static_cast<int>(numWarpY), static_cast<int>(numWarps));
+```
+
+### 5: half到float的数据转换错误
+
+不清楚什么原因, GPU端的half到float的数据转换出现了错误, 由于数据类型转换的问题, 导致了计算结果不正确.
+
+```c++
+template<typename T>
+__global__ void convertDataType(const UIN n, const float *in, T *out) {
+    const UIN idx = blockDim.x * blockIdx.x + threadIdx.x;
+    if (idx < n) {
+        out[idx] = static_cast<T>(in[idx]);
+    }
+}
+```
+
+例如 `in[4095] = 4095` 但是 `static_cast<half>(in[4095])` 之后 `in[4095]` 的值变成了4096.
+
+---
+
+## 加入 Tensor core
+
+使用 Tensor core 直接对密集矩阵乘法进行计算, 计算时间
 
 ---
 
@@ -2836,7 +2862,15 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 #### 连续内存
 
-整块64×64的矩阵块A和块B按连续的顺序载入共享内存
+整块64×64的矩阵块A和块B按连续的顺序载入共享内存.
+
+未完全实现.
+问题:
+
+- 除了第一个warp, 之后的warp载入的数据不对应, 应该是 `startIdxOfGlobalMemoryOfMtxA` 计算错误
+- 共享内存中一次储存64×64个矩阵数据, 但是超过这个大小的矩阵无法载入, 会出现错误
+
+放弃原因: **在 `wmma::load_matrix_sync` 中, 出现了bank conflict**
 
 ##### 测试结果 16×16×16 行主序储存
 
@@ -2845,5 +2879,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 #### 分段内存
 
 整块64×64的矩阵块A和块B按照16×16的块的顺序载入共享内存
+
+和连续内存的视线一样, 也出现了bank conflict
 
 ---
