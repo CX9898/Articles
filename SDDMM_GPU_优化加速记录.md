@@ -2895,7 +2895,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ###### matrix 5000 5000
 
-|                         | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
+| matrix_M_N_NNZ          | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
 |-------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|------|
 | matrix_5000_5000_125000 | 99.50%   | 256  | 0.20            | 0.21      | 0.71            | 1.36      | 0.91      | 1.57 |NO PASS Error rate : 0.02%
 | matrix_5000_5000_125000 | 99.50%   | 512  | 0.36            | 0.36      | 0.73            | 1.36      | 1.10      | 1.72 |
@@ -2904,7 +2904,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_125000 | 99.50%   | 3072 | 2.03            | 1.92      | 0.66            | 1.37      | 2.69      | 3.29 |
 | matrix_5000_5000_125000 | 99.50%   | 4096 | 2.73            | 2.54      | 0.66            | 1.37      | 3.39      | 3.91 |
 
-|                         | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
+| matrix_M_N_NNZ          | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
 |-------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|------|
 | matrix_5000_5000_100000 | 99.60%   | 256  | 0.17            | 0.20      | 0.56            | 1.14      | 0.73      | 1.34 |NO PASS Error rate : 0.02%
 | matrix_5000_5000_100000 | 99.60%   | 512  | 0.30            | 0.34      | 0.57            | 1.20      | 0.87      | 1.54 |
@@ -2913,7 +2913,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_100000 | 99.60%   | 3072 | 1.81            | 1.88      | 0.52            | 1.22      | 2.33      | 3.09 |
 | matrix_5000_5000_100000 | 99.60%   | 4096 | 2.40            | 2.48      | 0.53            | 1.19      | 2.93      | 3.67 |
 
-|                        | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
+| matrix_M_N_NNZ         | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
 |------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|------|
 | matrix_5000_5000_75000 | 99.70%   | 256  | 0.14            | 0.20      | 0.45            | 1.02      | 0.59      | 1.22 |NO PASS Error rate : 0.00%
 | matrix_5000_5000_75000 | 99.70%   | 512  | 0.27            | 0.33      | 0.47            | 1.02      | 0.74      | 1.36 |
@@ -2922,7 +2922,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_75000 | 99.70%   | 3072 | 1.54            | 1.83      | 0.41            | 7.94      | 1.95      | 9.78 |
 | matrix_5000_5000_75000 | 99.70%   | 4096 | 2.06            | 2.44      | 0.42            | 1.31      | 2.47      | 3.74 |
 
-|                        | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ         | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_5000_5000_50000 | 99.80%   | 256  | 0.13            | 0.19      | 0.33            | 4.57      | 0.46      | 4.76  |NO PASS Error rate : 0.00%
 | matrix_5000_5000_50000 | 99.80%   | 512  | 0.22            | 0.32      | 0.33            | 0.81      | 0.55      | 1.13  |
@@ -2931,7 +2931,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_50000 | 99.80%   | 3072 | 1.27            | 1.80      | 0.30            | 0.79      | 1.57      | 2.59  |
 | matrix_5000_5000_50000 | 99.80%   | 4096 | 1.72            | 2.40      | 0.30            | 0.80      | 2.02      | 3.20  |
 
-|                        | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
+| matrix_M_N_NNZ         | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
 |------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|------|
 | matrix_5000_5000_25000 | 99.90%   | 256  | 0.16            | 0.18      | 0.19            | 0.61      | 7.57      | 0.78 |
 | matrix_5000_5000_25000 | 99.90%   | 512  | 0.17            | 0.29      | 0.19            | 0.65      | 0.36      | 0.94 |
@@ -2940,7 +2940,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_5000_5000_25000 | 99.90%   | 3072 | 1.01            | 1.76      | 0.18            | 0.64      | 1.20      | 2.40 |
 | matrix_5000_5000_25000 | 99.90%   | 4096 | 1.36            | 2.33      | 0.18            | 0.60      | 1.54      | 2.94 |
 
-|                       | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
+| matrix_M_N_NNZ        | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx  |
 |-----------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|------|
 | matrix_5000_5000_2500 | 99.99%   | 256  | 0.09            | 0.17      | 0.04            | 0.65      | 0.12      | 0.82 |
 | matrix_5000_5000_2500 | 99.99%   | 512  | 0.14            | 0.28      | 0.03            | 0.47      | 0.17      | 0.75 |
@@ -2951,7 +2951,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ###### matrix 10000 10000
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_10000_10000_5000000 | 95.00%   | 256  | 2.11            | 0.96      | 45.83           | 46.58     | 47.94     | 47.55 |NO PASS Error rate : 0.00%
 | matrix_10000_10000_5000000 | 95.00%   | 512  | 4.45            | 1.63      | 48.76           | 45.19     | 53.20     | 46.82 |
@@ -2960,7 +2960,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_10000_10000_5000000 | 95.00%   | 3072 | 27.61           | 8.39      | 50.89           | 45.15     | 78.50     | 53.55 |
 | matrix_10000_10000_5000000 | 95.00%   | 4096 | 36.66           | 11.69     | 47.82           | 44.77     | 84.48     | 56.46 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_10000_10000_4000000 | 96.00%   | 256  | 1.75            | 0.93      | 31.04           | 37.20     | 32.79     | 38.13 |NO PASS Error rate : 0.00%
 | matrix_10000_10000_4000000 | 96.00%   | 512  | 3.54            | 1.59      | 33.87           | 36.95     | 37.41     | 38.54 |
@@ -2969,7 +2969,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_10000_10000_4000000 | 96.00%   | 3072 | 22.10           | 8.36      | 36.11           | 36.14     | 58.21     | 44.50 |
 | matrix_10000_10000_4000000 | 96.00%   | 4096 | 31.17           | 11.63     | 33.79           | 35.17     | 64.96     | 46.80 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_10000_10000_3000000 | 97.00%   | 256  | 1.34            | 0.90      | 24.02           | 26.80     | 25.36     | 27.69 |NO PASS Error rate : 0.00%
 | matrix_10000_10000_3000000 | 97.00%   | 512  | 2.68            | 1.56      | 16.64           | 28.41     | 19.32     | 29.97 |
@@ -2978,7 +2978,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_10000_10000_3000000 | 97.00%   | 3072 | 17.45           | 8.33      | 29.47           | 29.04     | 46.92     | 37.37 |
 | matrix_10000_10000_3000000 | 97.00%   | 4096 | 24.46           | 11.58     | 27.78           | 25.96     | 52.24     | 37.54 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_10000_10000_2000000 | 98.00%   | 256  | 0.87            | 0.83      | 17.98           | 17.51     | 18.85     | 18.34 |NO PASS Error rate : 0.00%
 | matrix_10000_10000_2000000 | 98.00%   | 512  | 1.81            | 1.48      | 9.97            | 20.34     | 11.78     | 21.82 |
@@ -2987,7 +2987,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_10000_10000_2000000 | 98.00%   | 3072 | 12.41           | 8.24      | 17.09           | 18.44     | 29.51     | 26.68 |
 | matrix_10000_10000_2000000 | 98.00%   | 4096 | 17.25           | 11.53     | 16.58           | 26.08     | 33.83     | 37.61 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_10000_10000_1000000 | 99.00%   | 256  | 0.49            | 0.79      | 5.33            | 9.62      | 5.82      | 10.42 |NO PASS Error rate : 0.00%
 | matrix_10000_10000_1000000 | 99.00%   | 512  | 0.93            | 1.42      | 5.59            | 10.42     | 6.52      | 11.84 |
@@ -2998,7 +2998,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ###### matrix 15000 15000
 
-|                             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ              | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |-----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_15000_15000_11250000 | 95.00%   | 256  | 5.89            | 2.11      | 101.25          | 104.72    | 107.14    | 106.83 |NO PASS Error rate : 0.00%
 | matrix_15000_15000_11250000 | 95.00%   | 512  | 11.93           | 3.61      | 104.64          | 99.60     | 116.58    | 103.21 |
@@ -3007,7 +3007,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_15000_15000_11250000 | 95.00%   | 3072 | 71.99           | 23.96     | 102.06          | 94.62     | 174.05    | 118.59 |
 | matrix_15000_15000_11250000 | 95.00%   | 4096 | 99.24           | 32.02     | 106.85          | 94.34     | 206.08    | 126.37 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_15000_15000_9000000 | 96.00%   | 256  | 4.78            | 2.02      | 85.59           | 85.10     | 90.36     | 87.12  |NO PASS Error rate : 0.00%
 | matrix_15000_15000_9000000 | 96.00%   | 512  | 9.67            | 3.52      | 81.69           | 89.08     | 91.36     | 92.60  |
@@ -3016,7 +3016,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_15000_15000_9000000 | 96.00%   | 3072 | 58.74           | 23.84     | 82.63           | 78.38     | 141.37    | 102.22 |
 | matrix_15000_15000_9000000 | 96.00%   | 4096 | 80.65           | 31.90     | 83.57           | 77.00     | 164.22    | 108.90 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_15000_15000_6750000 | 97.00%   | 256  | 3.66            | 1.94      | 64.97           | 69.50     | 68.63     | 71.43 |NO PASS Error rate : 0.00%
 | matrix_15000_15000_6750000 | 97.00%   | 512  | 7.41            | 3.44      | 62.79           | 64.49     | 70.20     | 67.93 |
@@ -3025,7 +3025,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_15000_15000_6750000 | 97.00%   | 3072 | 45.17           | 23.76     | 71.07           | 57.81     | 116.24    | 81.57 |
 | matrix_15000_15000_6750000 | 97.00%   | 4096 | 62.51           | 31.80     | 70.55           | 60.61     | 133.06    | 92.41 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_15000_15000_4500000 | 98.00%   | 256  | 1.39            | 1.82      | 45.12           | 42.57     | 46.52     | 44.40 |NO PASS Error rate : 0.00%
 | matrix_15000_15000_4500000 | 98.00%   | 512  | 3.00            | 3.32      | 29.59           | 47.01     | 32.58     | 50.33 |
@@ -3034,7 +3034,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_15000_15000_4500000 | 98.00%   | 3072 | 25.99           | 23.63     | 40.85           | 40.81     | 66.84     | 64.45 |
 | matrix_15000_15000_4500000 | 98.00%   | 4096 | 38.74           | 31.63     | 47.07           | 41.57     | 85.82     | 73.20 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_15000_15000_2250000 | 99.00%   | 256  | 0.73            | 1.72      | 15.50           | 29.86     | 16.23     | 31.58 |NO PASS Error rate : 0.00%
 | matrix_15000_15000_2250000 | 99.00%   | 512  | 1.66            | 3.15      | 10.81           | 31.46     | 12.47     | 34.62 |
@@ -3045,7 +3045,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 
 ###### matrix 20000 20000
 
-|                             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ              | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |-----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_20000_20000_20000000 | 95.00%   | 256  | 9.01            | 3.71      | 187.89          | 168.11    | 196.89    | 171.81 |NO PASS Error rate : 0.00%
 | matrix_20000_20000_20000000 | 95.00%   | 512  | 17.91           | 6.37      | 192.34          | 168.54    | 210.25    | 174.91 |
@@ -3054,7 +3054,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_20000_20000_20000000 | 95.00%   | 3072 | 107.15          | 45.99     | 185.22          | 163.72    | 292.37    | 209.71 |
 | matrix_20000_20000_20000000 | 95.00%   | 4096 | 146.62          | 61.31     | 210.21          | 166.06    | 356.83    | 227.37 |
 
-|                             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ              | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |-----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_20000_20000_16000000 | 96.00%   | 256  | 7.18            | 3.53      | 162.54          | 139.93    | 169.72    | 143.45 |NO PASS Error rate : 0.00%
 | matrix_20000_20000_16000000 | 96.00%   | 512  | 14.41           | 6.17      | 158.00          | 137.13    | 172.41    | 143.30 |
@@ -3063,7 +3063,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_20000_20000_16000000 | 96.00%   | 3072 | 89.47           | 45.75     | 170.03          | 133.67    | 259.50    | 179.43 |
 | matrix_20000_20000_16000000 | 96.00%   | 4096 | 119.37          | 61.06     | 172.09          | 133.37    | 291.46    | 194.43 |
 
-|                             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ              | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |-----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_20000_20000_12000000 | 97.00%   | 256  | 5.51            | 3.40      | 113.12          | 107.15    | 118.63    | 110.56 |NO PASS Error rate : 0.00%
 | matrix_20000_20000_12000000 | 97.00%   | 512  | 11.14           | 6.09      | 107.68          | 107.45    | 118.82    | 113.54 |
@@ -3072,7 +3072,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_20000_20000_12000000 | 97.00%   | 3072 | 70.07           | 45.54     | 105.96          | 102.19    | 176.03    | 147.73 |
 | matrix_20000_20000_12000000 | 97.00%   | 4096 | 93.38           | 60.82     | 106.94          | 100.67    | 200.32    | 161.49 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx    |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|--------|
 | matrix_20000_20000_8000000 | 98.00%   | 256  | 3.76            | 3.21      | 73.24           | 78.86     | 77.00     | 82.08  |NO PASS Error rate : 0.00%
 | matrix_20000_20000_8000000 | 98.00%   | 512  | 7.58            | 5.88      | 71.69           | 78.08     | 79.26     | 83.96  |
@@ -3081,7 +3081,7 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 | matrix_20000_20000_8000000 | 98.00%   | 3072 | 48.61           | 45.28     | 76.15           | 71.13     | 124.76    | 116.41 |
 | matrix_20000_20000_8000000 | 98.00%   | 4096 | 66.77           | 60.55     | 75.91           | 73.24     | 142.69    | 133.79 |
 
-|                            | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
+| matrix_M_N_NNZ             | sparsity | k    | isratnisa_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |----------------------------|----------|------|-----------------|-----------|-----------------|-----------|-----------|-------|
 | matrix_20000_20000_4000000 | 99.00%   | 256  | 1.14            | 3.02      | 39.55           | 47.04     | 40.69     | 50.06 |NO PASS Error rate : 0.00%
 | matrix_20000_20000_4000000 | 99.00%   | 512  | 2.52            | 5.57      | 35.52           | 43.71     | 38.03     | 49.28 |
