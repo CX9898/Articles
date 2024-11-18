@@ -4,11 +4,11 @@
 
 前言
 
-最近在学怎么使用 Tensor core.
+最近在学习怎么使用 Tensor core.
 主要通过 [NVIDIA 官方文档](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#warp-matrix-functions)和
 [cuda-samples](https://github.com/NVIDIA/cuda-samples) 项目中关于 Tensor core 部分的实际代码示例结合其他文章做出总结,
-解释了什么是 Tensor core 和在实际编程中如何使用 Tensor core.
-由于还在学习中, 本文可能会不时更新.
+再结合使用过程中的一些问题写出这篇文章.
+本文首先解释了什么是 Tensor core 再详细说明在实际编程中如何使用 Tensor core.
 
 ---
 
@@ -103,7 +103,7 @@ CUDA 9.0 引入了一个以 warp 级别进行操作的矩阵计算函数, 以便
 
 **实际工作中, 一个warp中的每个线程都只计算结果矩阵块的8个数据(16×16/32).**
 
-Tensor core 支持各种元素类型和矩阵大小, 下表列出了目前WMMA API支持的 matrix_a, matrix_b 和 accumulator 矩阵的格式和矩阵维度.
+Tensor core 支持各种元素类型和矩阵大小, 下表列出了目前WMMA API支持的 matrix_a, matrix_b 和 accumulator 矩阵的部分格式和矩阵维度.
 
 ![Tensor core WMMA API 目前支持的格式和矩阵维度](img/CUDA_编程使用_Tensor_core_详解/Tensor%20core%20WMMA%20API%20目前支持的格式和矩阵维度.png)
 Tensor core WMMA API 目前支持的格式和矩阵维度
@@ -122,19 +122,25 @@ Tensor core WMMA API 目前支持的格式和矩阵维度
 > 调用前需要检查 GPU 是否带有 Tensor core, 并且在构建项目时设置对应的 GPU 架构.
 > 构建方式可以查看另一篇文章 : [用 CMake 构建跨平台 CUDA C/C++ 项目](https://zhuanlan.zhihu.com/p/701581020)
 
-以下所有函数和类型都在 `namespace::nvcuda::wmma` 中定义.
+WMMA API的所有函数和类型都在头文件 `mma.h` 中的 `namespace::nvcuda::wmma` 命名空间中定义. 
+为了简化代码的同时避免命名空间冲突, 保持 `wmma` 的显示, 只使用 `nvcuda` 命名空间.
+
+```C++
+#include <mma.h>
+using namespace nvcuda;
+```
 
 ### fragment 类
 
-**fragment 是一个重载类, 用于储存矩阵的片段.**
+**fragment 是一个重载类, 用于储存矩阵的片段数据.**
 
 ```C++
 template<typename Use, int m, int n, int k, typename T, typename Layout=void> class fragment;
 
 // examples
-fragment<wmma::matrix_a, WMMA_M, WMMA_N, WMMA_K, half, wmma::row_major> aFrag;
-fragment<wmma::matrix_b, WMMA_M, WMMA_N, WMMA_K, half, wmma::col_major> bFrag;
-fragment<wmma::accumulator, WMMA_M, WMMA_N, WMMA_K, float> cFrag;
+wmma::fragment<wmma::matrix_a, WMMA_M, WMMA_N, WMMA_K, half, wmma::row_major> aFrag;
+wmma::fragment<wmma::matrix_b, WMMA_M, WMMA_N, WMMA_K, half, wmma::col_major> bFrag;
+wmma::fragment<wmma::accumulator, WMMA_M, WMMA_N, WMMA_K, float> cFrag;
 ```
 
 - `Use` : 用作第一个乘数的矩阵使用 `matrix_a` , 第二个乘数的矩阵使用 `matrix_b` . 当分别用作累加器C或目标累加器D时使用
@@ -155,8 +161,11 @@ for (int idx = 0; idx < frag.num_elements; ++idx) {
 }
 ```
 
-fragment 类的内在的储存方式不可见, 并且可能会根据不同的 GPU 架构进行调整.
-也就是说通过以上方式不能准确知道当前 `idx` 下的 `frag.x[idx]` 在实际矩阵块中的哪个位置.
+官方文档(CUDA C++ Programming Guide)中关于fragment类的描述说 "The mapping of matrix elements into fragment internal storage is unspecified and subject to change
+in future architectures."
+也就是说通过以上方式不能准确知道遍历过程中当前 `idx` 下的 `frag.x[idx]` 在实际矩阵块中的哪个位置.
+
+但是通过
 
 ### 加载矩阵片数据
 
@@ -174,7 +183,9 @@ void load_matrix_sync(fragment<...> &a, const T* mptr, unsigned ldm, layout_t la
 
 > 注意 : 因为会进行线程同步操作, 此函数必须由 warp 中的所有线程调用.
 
-如果要加载的块不满足对应的矩阵维度, 结果将出错.
+如果要加载的块不满足对应的矩阵维度, 结果将出错. 也就是说要保证输入矩阵块的大小和 fragment 类的大小匹配.
+例如指定的fragment类的m,n,k分别为32,8,16, 那么加载的矩阵块A的大小必须是32×16, 矩阵块B的大小必须是16×8.
+特别是在进行K迭代时, 要注意是否超过了原始矩阵的大小.
 
 ### 矩阵计算
 
@@ -247,16 +258,15 @@ A, B 和 C 矩阵都默认为列主序储存
 - `CUBLAS_OP_T` : 转置操作
 - `CUBLAS_OP_C` : 共轭转置操作
 
-> 共轭转置 : 要理解共轭转置首先要了解什么是实数什么是虚数. 
-> 实数是可以在数轴上面表示的数, 也就是平常接触到的数,
-> 可以进行标准的加减乘除操作. 复数是由实数和虚数部分组成的数, 基本形式为 a + b * i , 其中 a 是实部(可以是任何实数), b
-> 是虚部(可以是任何实数), i 是虚数单位(满足 i² = -1 ). 实数是复数的一个子集(也就是 b = 0 时). 复数在实数系统中无法表示,
-> 复数的引入扩展了数学的边界, 使得能够解决一些在实数范围内无法解决的问题. 而共轭转置就是将一个复数 a + b * i 变为 a - b *
-> i .
+> 共轭转置 : 要理解共轭转置首先要了解什么是实数什么是虚数.
+> 实数是可以在数轴上面表示的数, 也就是平常接触到的数, 可以进行标准的加减乘除操作.
+> 复数是由实数和虚数部分组成的数, 基本形式为 a + b * i ,
+> 其中 a 是实部(可以是任何实数), b 是虚部(可以是任何实数), i 是虚数单位(满足 i² = -1 ).
+> 实数是复数的一个子集(也就是 b = 0 时). 复数在实数系统中无法表示,
+> 复数的引入扩展了数学的边界, 使得能够解决一些在实数范围内无法解决的问题.
+> 而共轭转置就是将一个复数 a + b * i 变为 a - b * i
 
 ## 示例
-
-## 结语
 
 参考:
 [1] Tips for Optimizing GPU Performance Using Tensor Cores
