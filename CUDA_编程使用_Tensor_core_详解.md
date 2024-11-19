@@ -76,15 +76,17 @@ CUDA core 中, 每次进行一个点和一行进行相乘依次得到新的矩�
 分块技术将 A, B 和 C 矩阵按照相对应的维度 (例如 C 块的维度是 m × n, A 块是 m × k, B 块是 k × n) 分为无数个小的矩阵块.
 一个 m × n 的 C 块的结果由对应 m × k 的 A 块 和 k × n 的 B 块沿着 K 维相乘并累加得到.
 
-例如要计算一个 3 × 2 的 C 块, 它在结果矩阵 C 的位置是最左上角, 也就是由1~3行和1~2列组成的矩阵块.
-**设 k = 4**, 则首先计算 A 矩阵的
-**第1~3行和第1~4列组成的 A 块** 与 B 矩阵的**第1~4行和第1~2列组成的 B 块相乘得到中间结果矩阵 acc(accumulator) 块**,
-再计算由**第1~3行和第5~8列组成的 A 块**与**第5~8行和第1~2列组成的 B 块相乘得到的中间结果矩阵块与上一次的 acc 块相加**.
-**循环迭代进行, 最终遍历 A 矩阵第1~3行的所有数据和 B 矩阵第1~2列的所有数据得到最终结果矩阵 C 块. **
+如下图所示, 要计算一个 32 × 8 的 C 块, 它在结果矩阵 C 的位置是最左上角, 也就是由1~32行和1~8列组成的矩阵块.
+设 k = 16, 则首先计算 A 矩阵的第1~32行和第1~16列组成的 A 块 与 B 矩阵的第1~16行和第1~8列组成的 B 块相乘得到中间结果矩阵
+acc(accumulator) 块,
+再计算由第1~32行和第17~32列组成的 A 块与第17~32行和第1~8列组成的 B 块相乘得到的新的acc块与上一次的 acc 块相加.
+沿K维循环迭代进行, 最终遍历计算 A 矩阵第1~32行的所有数据和 B 矩阵第1~8列的所有数据得到最终结果矩阵 C 块.
 
-使用分块技术来计算矩阵乘法最主要的操作就是两个矩阵块相乘, 将结果矩阵块累加到上一次的结果矩阵块.
+![分块矩阵相乘累加示例.png](img/CUDA编程使用Tensor core详解/分块矩阵相乘累加示例.png)
 
-Tensor core 就是用于计算矩阵相乘和累加的操作.
+**使用分块技术来计算矩阵乘法最主要的操作就是两个矩阵块相乘, 将结果矩阵块累加到上一次的结果矩阵块.
+Tensor core 就是用于计算矩阵相乘和累加的操作.**
+
 将矩阵按照 Tensor core 支持的矩阵维度来分块, 随后将 A 块 和 B 块利用 Tensor core 沿着 K 维相乘累加得到结果矩阵 C 块.
 再进行同样的操作来计算下一个 C 块, 最后所有的 C 块结合起来得到最终的结果矩阵.
 
@@ -122,7 +124,7 @@ Tensor core WMMA API 目前支持的格式和矩阵维度
 > 调用前需要检查 GPU 是否带有 Tensor core, 并且在构建项目时设置对应的 GPU 架构.
 > 构建方式可以查看另一篇文章 : [用 CMake 构建跨平台 CUDA C/C++ 项目](https://zhuanlan.zhihu.com/p/701581020)
 
-WMMA API的所有函数和类型都在头文件 `mma.h` 中的 `namespace::nvcuda::wmma` 命名空间中定义. 
+WMMA API的所有函数和类型都在头文件 `mma.h` 中的 `namespace::nvcuda::wmma` 命名空间中定义.
 为了简化代码的同时避免命名空间冲突, 保持 `wmma` 的显示, 只使用 `nvcuda` 命名空间.
 
 ```C++
@@ -161,7 +163,8 @@ for (int idx = 0; idx < frag.num_elements; ++idx) {
 }
 ```
 
-官方文档(CUDA C++ Programming Guide)中关于fragment类的描述说 "The mapping of matrix elements into fragment internal storage is unspecified and subject to change
+官方文档(CUDA C++ Programming Guide)中关于fragment类的描述说 "The mapping of matrix elements into fragment internal
+storage is unspecified and subject to change
 in future architectures."
 也就是说通过以上方式不能准确知道遍历过程中当前 `idx` 下的 `frag.x[idx]` 在实际矩阵块中的哪个位置.
 
