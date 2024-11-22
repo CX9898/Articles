@@ -106,3 +106,17 @@ Couchbase Lite能够在任何网络环境下，确保移动应用对本地数据
 Couchbase Sync Gateway作为安全的数据访问和同步的Web网关，其核心功能是将数据同步至Couchbase服务器以及多个Couchbase Lite实例，
 确保数据的一致性和实时性。
 这一机制不仅增强了移动应用的用户体验，也为数据的安全性和可靠性提供了有力保障。
+
+## Couchbash C++ 
+
+[Distributed Transactions from the C++ SDK](https://docs.couchbase.com/cxx-txns/current/distributed-acid-transactions-from-the-sdk.html)
+
+安装:
+
+- Couchbase 服务器
+- Boost
+- CMake
+- C++编译器
+- couchbase-transactions-cxx
+- libssl 1.1
+- transactions-cxx
