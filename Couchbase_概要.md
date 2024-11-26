@@ -119,4 +119,42 @@ Couchbase Sync Gateway作为安全的数据访问和同步的Web网关，其核�
 - C++编译器
 - couchbase-transactions-cxx
 - libssl 1.1
-- transactions-cxx
+- [transactions-cxx](https://github.com/couchbase/couchbase-transactions-cxx.git)
+
+安装:
+
+- CMake
+- C++编译器
+- [CPM.cmake](https://github.com/cpm-cmake/CPM.cmake#comparison-to-pure-fetchcontent--externalproject)
+- [NASM编译器](https://www.nasm.us/pub/nasm/releasebuilds/2.16/win64/)
+
+在项目中添加:
+
+```CMake
+CPMAddPackage(
+NAME
+couchbase_cxx_client
+GIT_TAG
+1.0.3
+VERSION
+1.0.3
+GITHUB_REPOSITORY
+"couchbase/couchbase-cxx-client"
+OPTIONS
+"COUCHBASE_CXX_CLIENT_STATIC_BORINGSSL ON"
+"COUCHBASE_CXX_CLIENT_BUILD_SHARED OFF"
+"COUCHBASE_CXX_CLIENT_BUILD_STATIC ON")
+```
+
+头文件和库文件需要手动添加:
+
+```cmake
+target_link_libraries(database PRIVATE fmt::fmt)
+target_link_libraries(database PRIVATE couchbase_cxx_client::couchbase_cxx_client_static)
+target_link_libraries(database PRIVATE taocpp::json)
+
+target_include_directories(database
+        PUBLIC
+        $<BUILD_INTERFACE:${couchbase_cxx_client_SOURCE_DIR}>
+)
+```
