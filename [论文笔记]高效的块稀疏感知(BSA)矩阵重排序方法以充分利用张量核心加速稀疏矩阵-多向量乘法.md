@@ -60,12 +60,14 @@ Blocked-Ellpack格式的主要优势在于它可以有效利用Tensor Cores.
 VBR格式与Blocked-Ellpack格式不同的是它会储存不同大小的非零块.
 而NVIDIA的cuBLAS库的 `cublasGemmEx()` 函数支持可变的矩阵大小, 可以通过这个函数以利用Tensor Cores进行稀疏矩阵-稠密矩阵乘法.
 
-### 带有Tensor Cores的核心的图形处理器(GPU)
+### 带有Tensor Cores的图形处理器(GPU)
 
 Tensor Cores是NVIDIA开发的一种专门用于加速矩阵-矩阵乘法和累加的硬件单元.
 在Volta架构中首次引入, 并在后续的Ampere架构和Hopper架构中得到了进一步的优化.
 为了高效执行矩阵-矩阵乘法和累加操作, 通过32个线程的线程束(warp)协作.
 与标准单精度(FP32)浮点格式相比, Tensor Cores通过利用低精度浮点格式(例如FP16), 实现了更高的性能和更低的内存需求.
+
+> 关于Tensor core的具体内容可参考另一篇文章: [CUDA 编程使用 Tensor core 详解](https://zhuanlan.zhihu.com/p/706494789)
 
 ### 关于稀疏矩阵重排以优化稀疏矩阵乘法(SpMM)的相关工作
 
@@ -112,6 +114,10 @@ BSA-SpMM概述图
 ### BSA-SpMM的细节
 
 #### BSA重排序中的相似性度量
+
+生成包含大量非零元素的密集块对于充分利用Tensor core 进行SpMM至关重要.
+为了获得高密度块, 关键是对每行的非零模式的相似性使用每个非零元素的列索引进行聚类. 此后, 将每行的非零列块表示为包含非零元素的列块.
+在重排序矩阵后提取密集块时, 使用与列块大小相同的密集块大小来增强数据局部性.
 
 #### 密集矩阵块的确定
 
