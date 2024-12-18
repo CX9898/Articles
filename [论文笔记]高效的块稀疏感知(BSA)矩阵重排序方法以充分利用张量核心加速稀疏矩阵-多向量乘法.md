@@ -210,8 +210,15 @@ BSA聚类核函数通过利用并行归约合动态并行性以及同步方案�
 #### 压缩Blocked-ELL格式以降低复杂性.
 
 在对矩阵进行重新排序后, 重新排序后的矩阵 $S_R$ 被分为稠密块 $S_d$ 和稀疏剩余 $S_s$. 为了同时使用Tensor Cores处理 $S_d$ 中的密集块,
-采用NVIDIA的cuSPARSE Block-SpMM, 当使用Blocked-ELL格式和 'cusparseSpMM()' 函数时, 它内部利用Tensor Cores进行并行块矩阵乘法.
+采用NVIDIA的cuSPARSE Block-SpMM, 使用Blocked-ELL格式和 'cusparseSpMM()' 函数间接利用Tensor Cores进行并行块矩阵乘法.
+$S_D$ 中的密集块元素是以Block-edELL格式储存, 为了匹配重新排序期间使用的列块大小 $\tau$, 密集块大小定为 $\tau\times\tau$.
 
+因为最初将所有空行重新排列到排序后的矩阵的前面, 能够进一步压缩Blocked-ELL格式. 
+将cuSPARSE Block-SpMM的起始指针配置为从Blocked-ELL格式中第一个非零块的出现开始使用Tensor cores进行计算.
+
+对于稀疏剩余 $S_s$ 中的非零元素, 使用CSR格式储存, 以便在CUDA核心上使用NVIDIA的cuSPARSE进行SpMM操作.
+
+$S_p$ 和 $S_s$ 分别独立用于执行SpMM操作, 最后将两个结果合并生成最终的输出矩阵 $O$.
 
 
 ---
