@@ -383,6 +383,8 @@ $S_p$ 和 $S_s$ 分别独立用于执行SpMM操作, 最后将两个结果合并�
 通过在行聚类过程中考虑块稀疏模式来增强SpMM的数据局部性. 并且开发了一种高效地GPU实现, 动态并行地聚类行. 最终实验结果表明,
 BSA-SpMM与现有的最先进SpMM实现相比, 获得了最高21.99倍的加速.
 
+可能有理解或表述不当的地方, 欢迎大家指正.
+
 论文链接: [Accelerated Block-Sparsity-Aware Matrix Reordering for Leveraging Tensor Cores in Sparse Matrix-Multivector Multiplication](https://link.springer.com/chapter/10.1007/978-3-031-69583-4_1)
 
 开源链接: [BSA-SpMM_EURO-PAR-2024](https://github.com/dleunji/BSA-SpMM_EURO-PAR-2024)
