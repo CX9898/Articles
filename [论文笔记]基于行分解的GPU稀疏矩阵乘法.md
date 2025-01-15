@@ -2,7 +2,7 @@
 
 # [论文笔记]基于行分解的GPU稀疏矩阵乘法
 
-**A Row Decomposition-based Approach for Sparse Matrix Multiplication on GPUs**
+<<**A Row Decomposition-based Approach for Sparse Matrix Multiplication on GPUs**>>
 
 论文于2024年发表在PPoPP '24: Proceedings of the 29th ACM SIGPLAN Annual Symposium on Principles and Practice of Parallel Programming.
 

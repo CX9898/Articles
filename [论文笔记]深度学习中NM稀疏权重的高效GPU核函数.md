@@ -2,7 +2,7 @@
 
 # [论文笔记]深度学习中N:M稀疏权重的高效GPU内核
 
-**EFFICIENT GPU KERNELS FOR N:M-SPARSE WEIGHTS IN DEEP LEARNING**
+<<**EFFICIENT GPU KERNELS FOR N:M-SPARSE WEIGHTS IN DEEP LEARNING**>>
 
 论文于2023年发表在Sixth Conference on Machine Learning and Systems · Miami (MLSys 23).
 

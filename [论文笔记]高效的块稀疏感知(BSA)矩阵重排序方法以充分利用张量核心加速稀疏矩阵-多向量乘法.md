@@ -2,8 +2,8 @@
 
 # [论文笔记]高效的块稀疏感知(BSA)矩阵重排序方法以充分利用张量核心加速稀疏矩阵-多向量乘法
 
-**Accelerated Block-Sparsity-Aware Matrix Reordering for Leveraging Tensor Cores in Sparse Matrix-Multivector
-Multiplication**
+<<**Accelerated Block-Sparsity-Aware Matrix Reordering for Leveraging Tensor Cores in Sparse Matrix-Multivector
+Multiplication**>>
 
 论文于2024年发表于Euro-Par 2024会议(30th International European Conference on Parallel and Distributed Computing).
 
