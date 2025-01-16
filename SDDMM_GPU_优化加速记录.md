@@ -3097,3 +3097,23 @@ for (int matrixPIdx = 0; matrixPIdx < nnz; ++matrixPIdx) {
 分析稀疏矩阵数据, 不需要创建那么多kernel来计算整个矩阵
 
 ---
+
+## 2025/1/16 新idea
+
+1. 首先将输入稀疏矩阵S的行进行重排:
+   1. 根据论文<<Accelerated Block-Sparsity-Aware Matrix Reordering for Leveraging Tensor Cores in Sparse Matrix-Multivector Multiplication>>的方法对行进行排序
+2. 将稀疏矩阵S分为多个行面板(大小为16)
+3. 针对每个行面板
+   1. 对行面板的列进行重排, 根据列段的非零元素个数进行排序, 非零个数高的列放在前面
+   2. 对列进行分块(大小为16), 最终形成多个16x16的稀疏矩阵块
+   3. 稀疏矩阵块再根据密度, 分为两类: "高密度块"和"剩余低密度的块组合成的稀疏剩余". 
+      - 高密度块使用Tensor Core运算
+      - 稀疏剩余使用CUDA core运算
+4. 计算每个行面板中的高密度块数量
+5. SDDMM核函数设计:
+   1.
+
+问题:
+1. 最终每个行面板的高密度块数量是不同的, 如何设计核函数?
+
+---
