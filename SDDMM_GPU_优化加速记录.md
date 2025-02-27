@@ -3155,7 +3155,9 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --resource-usage")
 
 ## 加入 alpha beta
 
-在sddmm核函数计算中, 加入 alpha beta 参数, 用于计算 $\mathbf{C}=\alpha(op(\mathbf{A})\cdot op(\mathbf{B}))\circ spy(\mathbf{C})+\beta\mathbf{C}$
+在sddmm核函数计算中, 加入 alpha beta 参数, 用于计算:
+
+$\mathbf{C}=\alpha(op(\mathbf{A})\cdot op(\mathbf{B}))\circ spy(\mathbf{C})+\beta\mathbf{C}$
 
 ### 16×16×16, blockDim : 128, 1, 1
 
