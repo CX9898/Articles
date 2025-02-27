@@ -3118,6 +3118,8 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --resource-usage")
 
 实际测试后, 发现寄存器使用量减少了, 运行时间也减少了.
 
+`__launch_bounds__()` 也是优化寄存器的方法, 以后可以研究一下
+
 ---
 
 ## 2025/1/16 新idea
