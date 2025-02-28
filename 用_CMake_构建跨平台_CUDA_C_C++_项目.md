@@ -276,6 +276,20 @@ add_executable(${PROJECT_NAME})
 
 ***
 
+### 设置CUDA可分离编译(可选)
+
+**如果不同 `.cu` 文件需要相互调用 `__device__` 函数或 `__global__` 函数则需要开启CUDA可分离编译选项.**
+
+`set_target_properties()` 用于修改 CMake 目标(target)的属性, 包括编译选项, 链接方式, 优化选项等. 通过启用 `CUDA_SEPARABLE_COMPILATION` 来开启CUDA可分离编译选项.
+
+```cmake
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+```
+
+> 如果要使用CUDA动态并行技术, 也需要开启CUDA可分编译选项.
+
+***
+
 ### 向构建目标链接源文件
 
 **使用 target_sources() 来向指定的构建目标链接源文件.** 使用前面"生成文件列表中"定义好的变量 `SRC_FILES` 来将 src 文件夹中的所有源文件链接到构建目标.
