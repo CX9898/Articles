@@ -74,7 +74,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda-12/lib64:$LD_LIBRARY_PATH
 $ source ~/.bashrc
 ```
 
-*window:*
+*Window:*
 
 安装 CUDA Toolkit 后检查有没有将CUDA库目录添加到环境变量Path. 如果没有则需要手动添加.
 
@@ -361,6 +361,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusparse)
 
 并且使用模块定义好的目标来导入库文件的同时也会自动添加相关的头文件, 使 C++ 源文件中也可以调用.
 
+`target_link_libraries()` 也可以在一条命令中添加多个库文件, 中间用空格分开. 对应的全局添加则使用 `link_directories()`.
+
 > 如果要使用cuDNN库, 则需要去官网下载 cuDNN: [Downloads cuDNN](https://developer.nvidia.com/cudnn-downloads), 设置好环境, 然后查找 cuDNN 包并添加头文件目录和库文件.
 
 以上源码可在 GitHub 上获取 : [GitHub - CX9898/cmake-cuda-sample](https://github.com/CX9898/cmake-cuda-sample)
@@ -392,7 +394,7 @@ $ make
 
 ***
 
-### window
+### Window
 
 首先选择 CMakeLists.txt 文件所在的路径.
 
