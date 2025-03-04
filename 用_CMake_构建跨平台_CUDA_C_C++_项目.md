@@ -36,7 +36,7 @@ $ nacc kernel.o main.o -o main
 
 为了解决以上这个问题, 就有了跨平台的CMake.
 
-![Cross-platform Make](img/用_CMake_构建跨平台_CUDA_C_C++项目/cross-platform Make.png)
+![Cross-platform Make](img/用_CMake_构建跨平台_CUDA_C_C++项目/cross_platform_Make.png)
 
 CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程序, 并不依赖于某特定编译器. CMake 并不直接建构出最终的软件, 而是产生标准的建构档(如 Unix 的 Makefile 或 Windows 的 Visual C++ 的 projects/workspaces), 然后再依一般的建构方式使用.
 
