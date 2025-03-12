@@ -114,6 +114,72 @@ __global__ void convertDataType(const UIN n, const float *in, T *out) {
 
 例如 `in[4095] = 4095` 但是 `static_cast<half>(in[4095])` 之后 `in[4095]` 的值变成了4096.
 
+### 6: 使用cuda stream反而降低了性能
+
+使用流:
+
+```
+sparseMatrix::CSR initialize From MatrixMarket file : ../dataset/test/matrix_15000_15000_/matrix_15000_15000_11250000.mtx
+rowReordering time : 95.406013 ms
+colReordering time : 38.704990 ms
+bell time : 161.697784 ms
+densePartTime: 21.616640, sparsePartTime: 122.437630
+check cuSparseSDDMM and sddmm : 
+|---------------------------check data---------------------------|
+| Data size : 11250000
+| Checking results...
+| Pass! Result validates successfully.
+|----------------------------------------------------------------|
+[File : matrix_15000_15000_11250000.mtx]
+[Build type : Release]
+[Device : NVIDIA GeForce RTX 4090]
+[WMMA_M : 16], [WMMA_N : 16], [WMMA_K : 8]
+[K : 4096], [M : 15000], [N : 15000], [NNZ : 11250000], [sparsity : 95.00%]
+[matrixA type : f]
+[matrixB type : f]
+[matrixC type : f]
+[matrixA storageOrder : row_major]
+[matrixB storageOrder : col_major]
+[gridDim : 938, 27, 1]
+[blockDim : 256, 1, 1]
+[cuSparse : 96.46]
+[zcx_sddmm : 144.05]
+[zcx_other : 295.81]
+[zcx : 439.86]
+```
+
+不使用流(使用默认流):
+
+```
+sparseMatrix::CSR initialize From MatrixMarket file : ../dataset/test/matrix_15000_15000_/matrix_15000_15000_11250000.mtx
+rowReordering time : 95.516289 ms
+colReordering time : 35.443550 ms
+bell time : 140.954498 ms
+densePartTime: 21.582848, sparsePartTime: 101.005310
+check cuSparseSDDMM and sddmm : 
+|---------------------------check data---------------------------|
+| Data size : 11250000
+| Checking results...
+| Pass! Result validates successfully.
+|----------------------------------------------------------------|
+[File : matrix_15000_15000_11250000.mtx]
+[Build type : Release]
+[Device : NVIDIA GeForce RTX 4090]
+[WMMA_M : 16], [WMMA_N : 16], [WMMA_K : 8]
+[K : 4096], [M : 15000], [N : 15000], [NNZ : 11250000], [sparsity : 95.00%]
+[matrixA type : f]
+[matrixB type : f]
+[matrixC type : f]
+[matrixA storageOrder : row_major]
+[matrixB storageOrder : col_major]
+[gridDim : 938, 27, 1]
+[blockDim : 256, 1, 1]
+[cuSparse : 85.35]
+[zcx_sddmm : 122.59]
+[zcx_other : 271.91]
+[zcx : 394.50]
+```
+
 ---
 
 ## TensorCore 测试 warp 中数据储存格式
