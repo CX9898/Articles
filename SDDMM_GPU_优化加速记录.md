@@ -5043,6 +5043,12 @@ Num results: 126
 ## 2025-3-13 加入稀疏部分的优化
 
 Num results: 126
+Bad results: 9.52%
+Average speedup: 1.53
+
+$S_i=\frac{T_{\mathrm{original,}i}}{T_{\text{optimized,}i}}$
+
+$S_{\mathrm{avg}}=\frac{1}{n}\sum_{i=1}^nS_i$
 
 - Build type : Release
 - Device : NVIDIA GeForce RTX 4090
