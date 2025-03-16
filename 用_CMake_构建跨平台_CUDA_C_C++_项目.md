@@ -2,7 +2,7 @@
 
 # 用 CMake 构建跨平台 CUDA C/C++ 项目
 
-***
+---
 
 ## 前言
 
@@ -10,7 +10,7 @@ NVIDIA 官方 [cuda-samples](https://github.com/NVIDIA/cuda-samples) 项目和�
 
 本文先解释了为什么要使用 CMake 来构建 CUDA C/C++ 项目. 创建一个项目框架, 一步一步讲解如何手动使用 CMake 构建一个 CUDA C/C++ 项目, 并详细解释构建 CUDA 项目额外需要的步骤.
 
-***
+---
 
 ## 为什么使用 CMake
 
@@ -46,7 +46,7 @@ CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程
 
 > CMake 广泛用于 C 和 C++ 语言，但它也可用于构建其他语言的源代码.
 
-***
+---
 
 ## 安装工具
 
@@ -55,7 +55,7 @@ CMake 是一个跨平台的自动化构建系统, 用来管理软件构建的程
 - CMake : Linux(Ubuntu) 系统可以通过命令 `sudo apt install cmake` 安装. 推荐去官网下载新版本后安装 [Download CMake](https://cmake.org/download/)
 - C/C++ 编译器 : Linux 使用 gcc/g++. Window 推荐使用 [visual studio](https://visualstudio.microsoft.com/zh-hans/)
 
-***
+---
 
 ## 环境设置
 
@@ -85,7 +85,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\lib
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 ```
 
-***
+---
 
 ## 构建项目框架
 
@@ -102,7 +102,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 
 > 要编译其他项目只需要将项目源文件复制到 src 文件夹, 头文件复制到 include 文件夹, 再根据使用的 cuda 库在 CMakeLists.txt 文件中开启对应的选项就可以.
 
-***
+---
 
 ## CMakeLists.txt
 
@@ -113,7 +113,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp
 - 
 下面一步一步讲解如何在配置文件中构建一个 CUDA C/C++项目, 并指出构建 CUDA 项目额外需要的步骤.
 
-***
+---
 
 ### 设置 CMake 版本
 
@@ -129,7 +129,7 @@ cmake_minimum_required(VERSION 3.26)
 
 >CMake 从3.11版本开始支持 CUDA.
 
-***
+---
 
 ### 创建项目
 
@@ -140,7 +140,7 @@ project(cmake-cuda-demo)
 ```
 项目名将存储在变量 `PROJECT_NAME` 中.
 
-***
+---
 
 ### 启用语言支持
 
@@ -153,7 +153,7 @@ enable_language(CUDA)
 
 > 也可以简化在 project() 项目名后添加, 例如: project(cmake-cuda-demo CUDA CXX).
 
-***
+---
 
 ### 查找 CUDA 工具包
 
@@ -174,7 +174,7 @@ find_package(CUDAToolkit)
 
 > 关于 FindCUDAToolkit 的详细信息可参考 CMake 官方文档 : [FindCUDAToolkit - CMake 3.30.0 Documentation](https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html).
 
-***
+---
 
 ### 设置 C++ 标准
 
@@ -191,7 +191,7 @@ set(CMAKE_CUDA_STANDARD 11)
 
 > 通过设置变量 `CMAKE_CXX_STANDARD_REQUIRED` 为 `ON` 可以强制使用指定的 C++ 标准. 如果编译器不支持指定的 C++ 标准, CMake 构建过程将报错.
 
-***
+---
 
 ### 选择 CUDA 架构
 
@@ -208,7 +208,7 @@ set(CMAKE_CUDA_ARCHITECTURES 70)
 ![GPU架构和对应的参数列表](img/用_CMake_构建跨平台_CUDA_C_C++项目/GPU虚拟架构功能列表.png)
 GPU架构和对应的参数列表
 
-***
+---
 
 ### 用变量存储文件夹路径
 
@@ -221,7 +221,7 @@ set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
 
 > 变量 `CMAKE_SOURCE_DIR` 是 CMake 的内置变量, 储存最外层 CMakeLists.txt 文件所在的目录. 如果项目有多个子目录和子 CMakeLists.txt 文件, `CMAKE_SOURCE_DIR` 始终指向最外层的路径. `CMAKE_BINARY_DIR` 则对应子 CMakeLists.txt 文件的路径.
 
-***
+---
 
 ### 生成文件列表
 
@@ -235,7 +235,7 @@ file(GLOB SRC_FILES "${SRC_DIR}/*.c" "${SRC_DIR}/*.cpp" "${SRC_DIR}/*.cc" "${SRC
 
 > 使用 file(GLOB_RECURSE) 可以递归搜索目录及其所有子目录中的文件
 
-***
+---
 
 #打印信息
 **`message()` 用于在 CMake 的构建过程中输出信息, 可以使用它来打印出变量的值, 或检查调试信息.**
@@ -263,7 +263,7 @@ endif ()
 
 > 当然了, 如果没有正确添加, 在 `enable_language(CUDA)` 就会报错, 这里只是给出示例
 
-***
+---
 
 ### 添加构建目标
 
@@ -274,7 +274,7 @@ add_executable(${PROJECT_NAME})
 ```
 一个配置文件中可以使用 `add_executable()` 添加多个构建目标.
 
-***
+---
 
 ### 设置CUDA可分离编译(可选)
 
@@ -288,7 +288,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 > 如果要使用CUDA动态并行技术, 也需要开启CUDA可分编译选项.
 
-***
+---
 
 ### 向构建目标链接源文件
 
@@ -323,7 +323,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 
 > 全局添加使用 `include_directories()` 命令. 当有多个目标需要构建, 并且需要包含相同的头文件路径时, 全局添加可以减少重复的代码. 但在大多数情况下推荐使用局部添加, 能使项目的依赖关系更加明确.
 
-***
+---
 
 ### 向构建目标链接 CUDA 库文件
 
@@ -367,13 +367,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE CUDA::cusparse)
 
 以上源码可在 GitHub 上获取 : [GitHub - CX9898/cmake-cuda-sample](https://github.com/CX9898/cmake-cuda-sample)
 
-***
+---
 
 ## 构建
 
 目前很多IDE都支持 CMake, 可以实现一键构建, 比如我现在用的 CLion. 但是有时候还是需要手动构建, 这里用来记录一下.
 
-***
+---
 
 ### Linux(Ubuntu)
 
@@ -392,7 +392,7 @@ $ make
 
 > 也可以直接在项目文件夹中使用 `cmake . -B build` 来创建 build 文件夹并开始构建 Makefile 文件, 再使用 `cmake --build build` 在 build 文件夹中构建项目可执行文件.
 
-***
+---
 
 ### Window
 
@@ -430,7 +430,7 @@ $ make
 
 在解决方案资源管理器中选择 `INSTALL` , 右键选择 `生成` , 就可以将可执行文件安装到指定目录.
 
-***
+---
 
 ## 扩展
 
@@ -450,7 +450,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 
 **添加其他第三方库(例如 Boost, HDF5)时一般也是按照先用 `find_package()` 找到对应软件包, 再用 `target_include_directories()` 和  `target_link_libraries()` 添加对应的头文件和库文件.**
 
-***
+---
 
 ### 安装设置
 
@@ -471,7 +471,28 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 > DESTINATION也可以不使用默认的安装路径, 直接使用固定参数.
 例如: `DESTINATION "${CMAKE_SOURCE_DIR}/bin"`
 
-***
+---
+
+### 查看核函数资源使用情况
+
+在nvcc编译时加入 `--resource-usage` 选项可以查看 kernel 函数的资源使用情况. 在CMake中也可以设置nvcc的编译选项.
+
+注意设置时不要覆盖原来的内容.
+
+```cmake
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --resource-usage")
+```
+
+> `CMAKE_CUDA_FLAGS` 是 CMake 中用于 CUDA 编译器 的标志变量, 它存储了传递给 nvcc(NVIDIA CUDA 编译器)的编译选项. 在 CMake 处理 CUDA 代码时, `CMAKE_CUDA_FLAGS` 变量可以用于指定额外的编译选项, 例如优化等级, 架构目标等.
+
+![核函数资源使用情况示例](img/用_CMake_构建跨平台_CUDA_C_C++项目/核函数资源使用情况示例.png)
+
+在编译信息中可以看到:
+
+- `test_kernel` 的每个线程需要 16 个寄存器(registers), 32个栈内存(stack). 每个线程块需要 0 字节共享内存(smem), 320 字节的常量内存(cmem), 0字节局部内存(lmem).
+- `test_kernel_2` 的每个线程需要 18 个寄存器(registers), 32 个栈内存(stack). 每个线程块需要 8192 字节共享内存(smem), 320 字节的常量内存(cmem), 0 字节局部内存(lmem).
+
+---
 
 参考：
 
