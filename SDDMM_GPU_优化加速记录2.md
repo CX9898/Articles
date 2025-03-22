@@ -6,8 +6,8 @@
 
 - bsa排序的 `BLOCK_SIZE` 参数
 - 行面板的大小 `ROW_PANEL_SIZE` 参数
-- 列排序的 `dense_column_segment_threshold` 参数
 - 列块的大小 `BLOCK_COL_SIZE` 参数
+- 列排序的 `dense_column_segment_threshold` 参数
 
 ## 2024-3-14 优化稀疏剩余部分的计算
 
@@ -267,7 +267,9 @@ Bad results: 0.00%
 
 ---
 
-## 2025-3-18 尝试修改dense_column_segment_threshold_的值
+## 尝试修改dense_column_segment_threshold_的值进行比较
+
+测试阈值(dense_column_segment_threshold_) = 2, 3, 4, 5, 6, 7
 
 ### dense_column_segment_threshold_ = 2
 
@@ -283,17 +285,49 @@ Bad results: 0.00%
 
 ### dense_column_segment_threshold_ = 3
 
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.96, maximum speedup: 6.07
+Average speedup over cuSparse: 34.18, maximum speedup: 277.50
+Bad results: 0.00%
+
 ---
 
 ### dense_column_segment_threshold_ = 4
+
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.93, maximum speedup: 5.75
+Average speedup over cuSparse: 32.17, maximum speedup: 268.00
+Bad results: 0.00%
 
 ---
 
 ### dense_column_segment_threshold_ = 5
 
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.93, maximum speedup: 6.00
+Average speedup over cuSparse: 32.72, maximum speedup: 276.00
+Bad results: 0.00%
+
 ---
 
 ### dense_column_segment_threshold_ = 6
+
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.94, maximum speedup: 6.00
+Average speedup over cuSparse: 31.55, maximum speedup: 259.25
+Bad results: 0.00%
 
 ---
 
@@ -368,3 +402,49 @@ Bad results: 0.00%
 |   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
 
 ---
+
+## 研究dense_column_segment_threshold_的值对性能的影响
+
+Tensor Core TF32(稠密)的峰值性能: 330 TFLOPS
+CUDA Core FP32的峰值性能: 82.58 TFLOPS
+
+使用Tensor Core TF32(稠密)来计算SDDMM时, 不是所有计算都是有效计算. 使用CUDA Core FP32来计算SDDMM时, 所有计算都是有效计算.
+矩阵块约密集, 使用Tensor Core TF32(稠密)来计算SDDMM时, 计算效率高. 矩阵块约稀疏, 使用CUDA Core FP32来计算SDDMM时, 计算效率高.
+
+选择使用Tensor Core TF32(稠密) 和 CUDA Core FP32 的阈值, 使得计算效率最高.
+
+理论阈值 = 82.58 / 330 ≈ 0.25. 相当于矩阵块中每一列至少要有4个非零元素.
+
+然而, 还有一个K的因素, 如果K越大, Tensor Core的效率越高, 但是有效计算量会随着K的增大而减小.
+
+实验画图, 寻找最佳的dense_column_segment_threshold_的值.
+
+实验设置:
+
+同一个矩阵大小, 同一个K值, 不同的稀疏度(具有平均的稀疏结构).
+
+- 全部使用CUDA Core来计算SDDMM. 记录GFLOPS.
+- 全部使用Tensor Core TF32(稠密)来计算SDDMM. 记录GFLOPS.
+
+进行实验, 画图.
+
+- x轴: 稀疏度(0.1~1.0)
+- y轴: GFLOPS
+
+两条曲线的交叉点就是就是稀疏度阈值.
+
+根据这个稀疏度阈值再进行实验:
+
+同一个矩阵大小, 同一个稀疏度(具有平均的稀疏结构), 不同的K值.
+
+- 全部使用CUDA Core来计算SDDMM. 记录GFLOPS.
+- 全部使用Tensor Core TF32(稠密)来计算SDDMM. 记录GFLOPS.
+
+进行实验, 画图.
+
+- x轴: K
+- y轴: GFLOPS
+
+两条曲线的交叉点就是就是
+
+> 实验建议: 每组测试 运行多次，取平均值
