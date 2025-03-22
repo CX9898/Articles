@@ -333,6 +333,14 @@ Bad results: 0.00%
 
 ### dense_column_segment_threshold_ = 7
 
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.93, maximum speedup: 6.00
+Average speedup over cuSparse: 33.77, maximum speedup: 278.25
+Bad results: 0.00%
+
 ---
 
 ## 测试isratnisa论文数据集
