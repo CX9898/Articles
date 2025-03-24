@@ -405,11 +405,11 @@ dataset file error
 
 ### M , N: , sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/web-NotreDame.txt
 
-| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
-|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+| M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx      |
+|--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|----------|
+| 325729 | 325729 | 99.95%   | 32  |                  | 9.42            | 180.29     |                 | 10.18          | 0.53      |                 | 58427.80  |           | 58428.34 |
+| 325729 | 325729 | 99.95%   | 128 |                  | 85.66           | 470.21     |                 | 4.47           | 0.82      |                 | 54834.91  |           | 54834.91 |
+| 325729 | 325729 | 99.95%   | 512 |                  | 320.32          | 601.26     |                 | 4.79           | 2.55      |                 | 59714.75  |           | 59717.30 |
 
 ---
 
