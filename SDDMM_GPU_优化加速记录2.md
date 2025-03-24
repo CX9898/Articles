@@ -353,13 +353,13 @@ Bad results: 0.00%
 | 34546 | 34546 | 99.96%   | 128 |                  | 10.67           | 878.29     |                 | 10.11          | 0.12      |                 | 2832.69   |           | 2832.82 |
 | 34546 | 34546 | 99.96%   | 512 |                  | 44.67           | 1013.41    |                 | 9.66           | 0.43      |                 | 2754.92   |           | 2755.35 |
 
-### M , N: , sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/com-amazon.ungraph.txt
+### M 334863, N: 334863, sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/com-amazon.ungraph.txt
 
-| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
-|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+| M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
+|--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
+| 334863 | 334863 | 99.80%   | 32  |                  | 5.77            | 226.93     |                 | 10.27          | 0.26      |                 | 283763.38 |           | 283763.62 |
+| 334863 | 334863 | 99.80%   | 128 |                  | 38.75           | 318.39     |                 | 6.12           | 0.74      |                 | 267893.28 |           | 267894.03 |
+| 334863 | 334863 | 99.80%   | 512 |                  | 140.10          | 291.98     |                 | 6.77           | 3.25      |                 | 269029.69 |           | 269032.94 |
 
 ### M  1005, N: 1005, sparsity: 97.47%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Eu-core.txt
 
@@ -379,13 +379,15 @@ Bad results: 0.00%
 
 ### M , N: , sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/loc-gowalla_edges.txt
 
+dataset file error
+
 | M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
 |---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
 |   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
 |   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
 |   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
 
-### file: web-BerkStan.txt
+### file: ./dataset_of_isratnisa_paper_results/dataset/web-BerkStan.txt
 
 | M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
 |---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
