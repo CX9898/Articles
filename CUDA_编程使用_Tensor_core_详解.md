@@ -43,17 +43,18 @@ A, B是半精度(FP16)的矩阵, 累加矩阵C, D可以是半精度(FP16)或单�
 
 ## 为什么使用 Tensor core
 
-Tesla V100 单个 SM 架构图中可以看到, 单个 SM 中分为4个 sub core.
-一个 sub core 中的 CUDA core 单个时钟周期可以执行 16 次 FFMA 操作.
-**一个 sub core 中有两个 Tensor core, 单个 Tensor core 每个时钟可以执行 64 次 FFMA 混合精度运算(FP16 乘法与 FP32
-累加). **
-比起 CUDA core, 使用 Tensor core 的吞吐量提升了8倍.
+在 Tesla V100 单个 SM 架构图中可以看到, 每个 SM 被划分为 4 个 sub core. 每个 sub core 包含 16 个 FP32 CUDA core,
+总共可以在**一个时钟周期内执行 16 次 FP32 FFMA(Fused Floating-Point Multiply-Add)操作**.
+
+每个 sub core 还集成了 2 个 Tensor Core. 每个 Tensor Core 每个时钟周期能够完成 64 次混合精度 FFMA 运算(即 FP16 乘法 +
+FP32 加法), 因此一个 sub core 的 Tensor Core **每个周期可以完成 128 次混合精度浮点运算**.
 
 > FFMA(Fused Floating-Point Multiply-Add)是一种在 GPU 上执行的高效数学运算,
 > 将 32 位浮点数的乘法和加法两个操作融合在一个指令中完成, 从而提高性能和减少计算延迟.
 
-Tesla V100 在一个 SM 单元中有8个 TensorCore, 每个时钟可执行共计 1024 次浮点运算.  
-使用 Volta 架构的 V100 GPU 相比于上一代 Pascal 架构的 P100 GPU 的吞吐量一共提升了 12 倍.
+**整个 SM 中共有 8 个 Tensor Core, 因此总共每个时钟周期可以完成 8 × 64 = 512 次 FFMA, 即 1024 次浮点运算(每个 FFMA 算作
+2 FLOPs). 与只使用 CUDA core 相比, 使用 Tensor Core 进行相同混合精度运算的吞吐量提升可达约 8 倍.** 在深度学习等特定计算场景中,
+采用 Volta 架构的 V100 GPU 相比上一代 Pascal 架构的 P100 GPU, 整体混合精度计算的吞吐量提升最多可达 12 倍.
 
 ![Pascal架构和Volta架构矩阵运算速度对比](img/CUDA_编程使用_Tensor_core_详解/Pascal架构和Volta架构矩阵运算速度对比.gif)
 <p style="text-align:center">Pascal架构和Volta架构矩阵运算速度对比</p>
