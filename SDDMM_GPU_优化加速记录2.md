@@ -908,3 +908,47 @@ CUDA Core FP32的峰值性能: 82.58 TFLOPS
 | 15000 | 15000 | 81.00%   | 4096 | 1018.18          | 1938.81         | 3204.14    | 343.96          | 180.63         | 109.30    | 450.40          | 857.89    | 794.35    | 967.19 |
 
 ---
+
+## latex代码
+
+### sparse block kernel
+
+```latex
+\begin{algorithm}[H]
+    \caption{SDDMM sparse block kernel}
+    \KwIn{float $A[M][K]$, float $B[N][K]$, COO $S[\text{num\_sparse\_data}]$}
+    \KwOut{COO P[M][N]}
+    
+    $smem\_A[16][32]$
+    
+    $smem\_P[num\_thread\_id / 2]$
+
+    $odd\_or\_even \gets \texttt{is\_odd}(thread\_id)$
+
+    $p\_index \gets \texttt{calculate\_p\_index}()$
+    
+    \For{$k \gets 0$ \KwTo $K$ \textbf{step} $32$}{
+    
+        $smem\_A$ \gets $A$
+        
+        \texttt{syncthreads()}
+
+        \For{$local\_k \gets odd\_or\_even \times 16$ \KwTo $(odd\_or\_even + 1) \times 16$ \textbf{step} $4$}{
+            $a\_data$ \gets \texttt{load 4 data from $smem\_A$} \\
+            $b\_data$ \gets \texttt{load 4 data from $B$} \\
+
+            $c \gets c + a\_data \cdot b\_data$ \\
+        }
+
+        $mask \gets (1 \ll t\_id) \mid (1 \ll (t\_id \oplus 1))$ \\
+        $c \gets c + \texttt{shuffle\_xor}(c,\ 1,\ mask)$ \\
+        \If{$odd\_or\_even = 0$}{
+            $smem\_P[thread\_id / 2] \gets c$ \\
+        }
+
+        \texttt{syncthreads()} \\
+    }
+    $P[p\_index] \gets smem\_P[t\_id / 2]$ \\
+    
+\end{algorithm}
+```
