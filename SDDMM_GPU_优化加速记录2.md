@@ -917,3 +917,21 @@ CUDA Core FP32的峰值性能: 82.58 TFLOPS
 
 ---
 
+### 优化结果
+
+```c++
+const float sparsityThreshold = (0.00219 * K + 79.81) / 100;
+const UIN minNumNonZeroPerColSegment =
+    std::ceil(BLOCK_SIZE * (1 - sparsityThreshold) / static_cast<float>(BLOCK_COL_SIZE));
+printf("sparsityThreshold = %f, minNumNonZeroCurrentSparsity : %d\n",
+       sparsityThreshold, minNumNonZeroPerColSegment);
+dense_column_segment_threshold_ = minNumNonZeroPerColSegment > 0 ? minNumNonZeroPerColSegment : 1;
+```
+
+Number of results: 126
+Number of effective results: 126
+Maximum sparsity: 99.99%, minimum sparsity: 95.00%
+Accuracy: 100.00%
+Average speedup over isratnisa: 2.98, maximum speedup: 6.17
+Average speedup over cuSparse: 34.66, maximum speedup: 350.00
+Bad results: 0.00%
