@@ -369,7 +369,7 @@ Bad results: 0.00%
 | 317080 | 317080 | 99.94%   | 128 |                  | 51.96           | 402.56     |                 | 5.17           | 0.67      |                 | 127096.54 |           | 127097.20 |
 | 317080 | 317080 | 99.94%   | 512 |                  | 157.43          | 330.56     |                 | 6.83           | 3.25      |                 | 131058.23 |           | 131061.48 |
 
-### M  36692, N: 36692, sparsity: 99.97%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Eu-core.txt
+### M  36692, N: 36692, sparsity: 99.97%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Enron.txt
 
 | M     | N     | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
 |-------|-------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|---------|
