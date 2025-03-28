@@ -361,13 +361,21 @@ Bad results: 0.00%
 | 334863 | 334863 | 99.80%   | 128 |                  | 38.75           | 318.39     |                 | 6.12           | 0.74      |                 | 267893.28 |           | 267894.03 |
 | 334863 | 334863 | 99.80%   | 512 |                  | 140.10          | 291.98     |                 | 6.77           | 3.25      |                 | 269029.69 |           | 269032.94 |
 
-### M  1005, N: 1005, sparsity: 97.47%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Eu-core.txt
+### file: ./dataset_of_isratnisa_paper_results/dataset/com-dblp.ungraph.txt
 
-| M    | N    | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
-|------|------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-------|
-| 1005 | 1005 | 97.47%   | 32  |                  | 0.15            | 53.27      |                 | 10.74          | 0.03      |                 | 17.38     |           | 17.42 |
-| 1005 | 1005 | 97.47%   | 128 |                  | 0.61            | 168.23     |                 | 10.70          | 0.04      |                 | 17.25     |           | 17.29 |
-| 1005 | 1005 | 97.47%   | 512 |                  | 2.44            | 340.95     |                 | 10.71          | 0.08      |                 | 17.52     |           | 17.60 |
+| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
+|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
+|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
+|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
+|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+
+### M  36692, N: 36692, sparsity: 99.97%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Eu-core.txt
+
+| M     | N     | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
+|-------|-------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|---------|
+| 36692 | 36692 | 99.97%   | 32  | 145.01           | 2.39            | 186.82     | 0.16            | 9.86           | 0.13      | 2.25            | 1467.17   | 2.41      | 1467.30 |
+| 36692 | 36692 | 99.97%   | 128 | 250.17           | 9.50            | 578.08     | 0.38            | 9.90           | 0.16      | 1.16            | 1458.03   | 1.54      | 1458.19 |
+| 36692 | 36692 | 99.97%   | 512 | 285.42           | 36.53           | 843.26     | 1.32            | 10.31          | 0.45      | 3.07            | 1518.22   | 4.39      | 1518.66 |
 
 ### M  4039, N: 4039, sparsity: 99.46%, file: ./dataset_of_isratnisa_paper_results/dataset/facebook_combined_adj.mmio
 
@@ -909,46 +917,3 @@ CUDA Core FP32的峰值性能: 82.58 TFLOPS
 
 ---
 
-## latex代码
-
-### sparse block kernel
-
-```latex
-\begin{algorithm}[H]
-    \caption{SDDMM sparse block kernel}
-    \KwIn{float $A[M][K]$, float $B[N][K]$, COO $S[\text{num\_sparse\_data}]$}
-    \KwOut{COO P[M][N]}
-    
-    $smem\_A[16][32]$
-    
-    $smem\_P[num\_thread\_id / 2]$
-
-    $odd\_or\_even \gets \texttt{is\_odd}(thread\_id)$
-
-    $p\_index \gets \texttt{calculate\_p\_index}()$
-    
-    \For{$k \gets 0$ \KwTo $K$ \textbf{step} $32$}{
-    
-        $smem\_A$ \gets $A$
-        
-        \texttt{syncthreads()}
-
-        \For{$local\_k \gets odd\_or\_even \times 16$ \KwTo $(odd\_or\_even + 1) \times 16$ \textbf{step} $4$}{
-            $a\_data$ \gets \texttt{load 4 data from $smem\_A$} \\
-            $b\_data$ \gets \texttt{load 4 data from $B$} \\
-
-            $c \gets c + a\_data \cdot b\_data$ \\
-        }
-
-        $mask \gets (1 \ll t\_id) \mid (1 \ll (t\_id \oplus 1))$ \\
-        $c \gets c + \texttt{shuffle\_xor}(c,\ 1,\ mask)$ \\
-        \If{$odd\_or\_even = 0$}{
-            $smem\_P[thread\_id / 2] \gets c$ \\
-        }
-
-        \texttt{syncthreads()} \\
-    }
-    $P[p\_index] \gets smem\_P[t\_id / 2]$ \\
-    
-\end{algorithm}
-```
