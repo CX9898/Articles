@@ -387,13 +387,11 @@ Bad results: 0.00%
 
 ### M , N: , sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/loc-gowalla_edges.txt
 
-dataset file error
-
-| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
-|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+| M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
+|--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|---------|
+| 196591 | 196591 | 99.96%   | 32  | 416.17           | 12.40           | 62.85      | 0.29            | 9.81           | 1.94      | 9.96            | 2492.64   | 10.26     | 2494.57 |
+| 196591 | 196591 | 99.96%   | 128 | 402.95           | 104.11          | 201.68     | 1.21            | 4.67           | 2.41      | 16.60           | 2604.06   | 17.81     | 2606.47 |
+| 196591 | 196591 | 99.96%   | 512 | 425.00           | 254.58          | 344.01     | 4.58            | 7.65           | 5.66      | 16.00           | 2609.44   | 20.58     | 2615.10 |
 
 ### file: ./dataset_of_isratnisa_paper_results/dataset/web-BerkStan.txt
 
