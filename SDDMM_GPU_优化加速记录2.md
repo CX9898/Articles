@@ -4,7 +4,8 @@
 
 ## 总结目前可调整优化的参数
 
-- bsa排序的 `BLOCK_SIZE` 参数
+- bsa排序的块大小 `BLOCK_SIZE` 参数
+- bsa排序的行相似阈值 `row_similarity_threshold_alpha` 参数
 - 行面板的大小 `ROW_PANEL_SIZE` 参数
 - 列块的大小 `BLOCK_COL_SIZE` 参数
 - 列排序的 `dense_column_segment_threshold` 参数
@@ -956,7 +957,7 @@ UIN calculateBlockSize(const sparseMatrix::CSR<float> &matrix) {
     const UIN minBlockSizeDueToGMEM =
         std::ceil((static_cast<size_t>(matrix.row()) * matrix.row()) * sizeof(UIN) / static_cast<float>(freeMem / 2));
     const UIN minBlockSizeDueToSMEM =
-        std::ceil((static_cast<size_t>(matrix.col()) * sizeof(UIN)) / static_cast<float>(maxSharedMemoryPerBlock));
+        std::ceil((static_cast<size_t>(matrix.col()) * sizeof(UIN)) / static_cast<float>(maxSharedMemoryPerBlock / 2));
     printf("minBlockSizeDueToGMEM : %d, minBlockSizeDueToSMEM : %d\n", minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
 
     UIN blockSize = std::max(minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
@@ -982,5 +983,31 @@ UIN calculateBlockSize(const sparseMatrix::CSR<float> &matrix) {
 - }
 - 现在所有行的簇ID已经确定了, 并且Index也已经根据簇ID排好序.
 - 再将每个簇内部的行进行比较和排序.
+
+旧:
+
+rowReordering time : 252718.609375 ms
+numRowPanels : 12287
+colReordering time : 2564.415771 ms
+bell time : 62.278591 ms
+denseBlockTime: 0.175104 ms
+sparseBlockTime: 5.001216 ms
+rebell : numDenseBlock = 1200, average density = 35.708332%, max average = 91.406250%, min average = 6.250000%
+rebell: numSparseBlock = 6995
+rebell : mode density = 25.000000%, frequency = 225
+Number of tiles before reorder: 1028212, average density : 0.722072%
+
+新:
+
+rowReordering time : 236917.437500 ms
+numRowPanels : 12287
+colReordering time : 2460.456299 ms
+bell time : 68.629951 ms
+denseBlockTime: 0.169984 ms
+sparseBlockTime: 5.131264 ms
+rebell : numDenseBlock = 640, average density = 31.531372%, max average = 84.375000%, min average = 12.500000%
+rebell: numSparseBlock = 7222
+rebell : mode density = 25.000000%, frequency = 178
+Number of tiles before reorder: 1028212, average density : 0.722072%
 
 ---
