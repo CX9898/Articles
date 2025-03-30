@@ -395,19 +395,19 @@ Bad results: 0.00%
 
 ### file: ./dataset_of_isratnisa_paper_results/dataset/web-BerkStan.txt
 
-| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
-|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+| M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
+|--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
+| 685230 | 685230 | 99.45%   | 32  |                  | 113.76          | 616.13     |                 | 4.28           | 0.79      |                 | 106120.15 |           | 106120.94 |
+| 685230 | 685230 | 99.45%   | 128 |                  | 202.56          | 1247.64    |                 | 9.61           | 1.56      |                 | 107353.88 |           | 107355.44 |
+| 685230 | 685230 | 99.45%   | 512 |                  | 1068.23         | 1232.86    |                 | 7.29           | 6.31      |                 | 105174.26 |           | 105180.57 |
 
 ### file: web-Google.txt
 
-| M | N | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx |
-|---|---|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----|
-|   |   |          | 32  |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 128 |                  |                 |            |                 |                |           |                 |           |           |     |
-|   |   |          | 512 |                  |                 |            |                 |                |           |                 |           |           |     |
+| M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx      |
+|--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|----------|
+| 875713 | 875713 | 99.78%   | 32  |                  | 28.33           | 402.35     |                 | 11.53          | 0.81      |                 | 76701.73  |           | 76702.54 |
+| 875713 | 875713 | 99.78%   | 128 |                  | 249.19          | 693.24     |                 | 5.24           | 1.89      |                 | 80744.29  |           | 80746.17 |
+| 875713 | 875713 | 99.78%   | 512 |                  | 576.91          | 634.96     |                 | 9.06           | 8.23      |                 | 77313.79  |           | 77322.02 |
 
 ### M , N: , sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/web-NotreDame.txt
 
@@ -933,3 +933,54 @@ Accuracy: 100.00%
 Average speedup over isratnisa: 2.98, maximum speedup: 6.17
 Average speedup over cuSparse: 34.66, maximum speedup: 350.00
 Bad results: 0.00%
+
+---
+
+## 2025-3-30 优化行排序速度的方法
+
+### 加速旧方法
+
+由于 `encodings`的大小为: `matrix.row() * numBlocksPerRow`, 在矩阵的行数太大的情况下, `encodings`的大小会变得特别大,
+导致超过最大内存的限制, 从而导致行排序失败.
+
+还有核函数的共享内存由每行中的块数量`numBlocksPerRow`决定, 矩阵的列数太大, 会导致共享内存不够, 从而导致核函数启动失败.
+
+解决方法: 通过以上两个问题, 自动调整`block_size`的大小.
+
+```c++
+UIN calculateBlockSize(const sparseMatrix::CSR<float> &matrix) {
+    size_t freeMem = 0;
+    size_t totalMem = 0;
+    cudaMemGetInfo(&freeMem, &totalMem);
+
+    const UIN minBlockSizeDueToGMEM =
+        std::ceil((static_cast<size_t>(matrix.row()) * matrix.row()) * sizeof(UIN) / static_cast<float>(freeMem / 2));
+    const UIN minBlockSizeDueToSMEM =
+        std::ceil((static_cast<size_t>(matrix.col()) * sizeof(UIN)) / static_cast<float>(maxSharedMemoryPerBlock));
+    printf("minBlockSizeDueToGMEM : %d, minBlockSizeDueToSMEM : %d\n", minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
+
+    UIN blockSize = std::max(minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
+
+    return blockSize > 32 ? blockSize : 32;
+}
+```
+
+---
+
+### 新方法
+
+- 先将所有行的簇ID设为NULL_VALUE.
+- int `clusterCount` = 0;
+- int `空值的起始Index` = 0
+- while("`空值的起始Index` < row.size())
+- {
+    - 然后将`空值的起始Index`的簇ID设为`clusterCount`.
+    - 让第一行和所有行进行比较, 如果相似度大于阈值, 则将簇ID设为`clusterCount`.
+    - 将`indices`和`簇ID`排序(只需要排序`空值的起始Index`后面的).
+    - 计算新的`空值的起始Index`
+    - ++clusterCount;
+- }
+- 现在所有行的簇ID已经确定了, 并且Index也已经根据簇ID排好序.
+- 再将每个簇内部的行进行比较和排序.
+
+---
