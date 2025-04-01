@@ -346,7 +346,9 @@ Bad results: 0.00%
 
 ## 测试isratnisa论文数据集
 
-### M  34546, N: 34546, sparsity: 99.96%, file: ./dataset_of_isratnisa_paper_results/dataset/cit-HepPh.txt
+### 测试日期: 2025-3-31
+
+#### M  34546, N: 34546, sparsity: 99.96%, file: ./dataset_of_isratnisa_paper_results/dataset/cit-HepPh.txt
 
 | M     | N     | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
 |-------|-------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|---------|
@@ -354,7 +356,7 @@ Bad results: 0.00%
 | 34546 | 34546 | 99.96%   | 128 |                  | 10.67           | 878.29     |                 | 10.11          | 0.12      |                 | 2832.69   |           | 2832.82 |
 | 34546 | 34546 | 99.96%   | 512 |                  | 44.67           | 1013.41    |                 | 9.66           | 0.43      |                 | 2754.92   |           | 2755.35 |
 
-### M 334863, N: 334863, sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/com-amazon.ungraph.txt
+#### M 334863, N: 334863, sparsity: , file: ./dataset_of_isratnisa_paper_results/dataset/com-amazon.ungraph.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
@@ -362,7 +364,7 @@ Bad results: 0.00%
 | 334863 | 334863 | 99.80%   | 128 |                  | 38.75           | 318.39     |                 | 6.12           | 0.74      |                 | 267893.28 |           | 267894.03 |
 | 334863 | 334863 | 99.80%   | 512 |                  | 140.10          | 291.98     |                 | 6.77           | 3.25      |                 | 269029.69 |           | 269032.94 |
 
-### file: ./dataset_of_isratnisa_paper_results/dataset/com-dblp.ungraph.txt
+#### file: ./dataset_of_isratnisa_paper_results/dataset/com-dblp.ungraph.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
@@ -370,7 +372,7 @@ Bad results: 0.00%
 | 317080 | 317080 | 99.94%   | 128 |                  | 51.96           | 402.56     |                 | 5.17           | 0.67      |                 | 127096.54 |           | 127097.20 |
 | 317080 | 317080 | 99.94%   | 512 |                  | 157.43          | 330.56     |                 | 6.83           | 3.25      |                 | 131058.23 |           | 131061.48 |
 
-### M  36692, N: 36692, sparsity: 99.97%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Enron.txt
+#### M  36692, N: 36692, sparsity: 99.97%, file: ./dataset_of_isratnisa_paper_results/dataset/email-Enron.txt
 
 | M     | N     | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx     |
 |-------|-------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|---------|
@@ -378,7 +380,7 @@ Bad results: 0.00%
 | 36692 | 36692 | 99.97%   | 128 | 250.17           | 9.50            | 578.08     | 0.38            | 9.90           | 0.16      | 1.16            | 1458.03   | 1.54      | 1458.19 |
 | 36692 | 36692 | 99.97%   | 512 | 285.42           | 36.53           | 843.26     | 1.32            | 10.31          | 0.45      | 3.07            | 1518.22   | 4.39      | 1518.66 |
 
-### M  4039, N: 4039, sparsity: 99.46%, file: ./dataset_of_isratnisa_paper_results/dataset/facebook_combined_adj.mmio
+#### M  4039, N: 4039, sparsity: 99.46%, file: ./dataset_of_isratnisa_paper_results/dataset/facebook_combined_adj.mmio
 
 | M    | N    | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx   |
 |------|------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-------|
@@ -386,7 +388,7 @@ Bad results: 0.00%
 | 4039 | 4039 | 99.46%   | 128 | 103.61           | 2.10            | 450.17     | 0.22            | 10.74          | 0.05      | 0.53            | 33.24     | 0.74      | 33.30 |
 | 4039 | 4039 | 99.46%   | 512 | 149.98           | 8.67            | 840.32     | 0.60            | 10.43          | 0.11      | 0.54            | 33.04     | 1.14      | 33.15 |
 
-### file: ./dataset_of_isratnisa_paper_results/dataset/web-BerkStan.txt
+#### file: ./dataset_of_isratnisa_paper_results/dataset/web-BerkStan.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
@@ -394,7 +396,7 @@ Bad results: 0.00%
 | 685230 | 685230 | 99.45%   | 128 |                  | 202.56          | 1247.64    |                 | 9.61           | 1.56      |                 | 107353.88 |           | 107355.44 |
 | 685230 | 685230 | 99.45%   | 512 |                  | 1068.23         | 1232.86    |                 | 7.29           | 6.31      |                 | 105174.26 |           | 105180.57 |
 
-### file: ./dataset_of_isratnisa_paper_results/dataset/web-Google.txt
+#### file: ./dataset_of_isratnisa_paper_results/dataset/web-Google.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx      |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|----------|
@@ -402,7 +404,7 @@ Bad results: 0.00%
 | 875713 | 875713 | 99.78%   | 128 |                  | 249.19          | 693.24     |                 | 5.24           | 1.89      |                 | 80744.29  |           | 80746.17 |
 | 875713 | 875713 | 99.78%   | 512 |                  | 576.91          | 634.96     |                 | 9.06           | 8.23      |                 | 77313.79  |           | 77322.02 |
 
-### file: ./dataset_of_isratnisa_paper_results/dataset/web-NotreDame.txt
+#### file: ./dataset_of_isratnisa_paper_results/dataset/web-NotreDame.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx      |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|----------|
@@ -410,13 +412,15 @@ Bad results: 0.00%
 | 325729 | 325729 | 99.95%   | 128 |                  | 85.66           | 470.21     |                 | 4.47           | 0.82      |                 | 54834.91  |           | 54834.91 |
 | 325729 | 325729 | 99.95%   | 512 |                  | 320.32          | 601.26     |                 | 4.79           | 2.55      |                 | 59714.75  |           | 59717.30 |
 
-### file: ./dataset_of_isratnisa_paper_results/dataset/loc-gowalla_edges.txt
+#### file: ./dataset_of_isratnisa_paper_results/dataset/loc-gowalla_edges.txt
 
 | M      | N      | sparsity | K   | isratnisa_gflops | cuSparse_gflops | zcx_gflops | isratnisa_sddmm | cuSparse_sddmm | zcx_sddmm | isratnisa_other | zcx_other | isratnisa | zcx       |
 |--------|--------|----------|-----|------------------|-----------------|------------|-----------------|----------------|-----------|-----------------|-----------|-----------|-----------|
 | 196591 | 196591 | 99.96%   | 32  | 416.17           | 11.57           | 63.15      | 0.29            | 10.51          | 1.93      | 9.96            | 255413.31 | 10.26     | 255415.23 |
 | 196591 | 196591 | 99.96%   | 128 | 402.95           | 97.60           | 203.58     | 1.21            | 4.67           | 4.99      | 16.60           | 253723.33 | 17.81     | 253725.72 |
 | 196591 | 196591 | 99.96%   | 512 | 425.00           | 253.12          | 375.62     | 4.58            | 7.69           | 5.18      | 16.00           | 255905.27 | 20.58     | 255910.45 |
+
+### 测试日期: 2025-4-1
 
 ---
 
