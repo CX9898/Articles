@@ -65,6 +65,7 @@ pip install numpy
 pip install torch
 pip install tensorboard
 pip install requests
-# 得到数据集
+sh compile.sh
+python main_learnable_skewness.py --mode train --task lra-image --random 1001 --name sat --sk 1.7 --ds 1.3
 
 ```
