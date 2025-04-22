@@ -61,7 +61,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 # 安装依赖
 pip install tqdm
-pip install numpy
+pip install numpy==1.26.4
 pip install torch
 pip install tensorboard
 pip install requests
