@@ -47,10 +47,10 @@ python preprocess/create_pathfinder.py
 python preprocess/create_listops.py
 python preprocess/create_retrieval.py
 python preprocess/create_text.py
-python preprocess/create_cifar10.py
+python preprocess/create_cifar10.py # 训练过程中出现内存分配失败. 限制训练样本数量为10000000后成功.
 ```
 
-## 构建模型
+## 构建SAT模型
 
 [SAT](https://github.com/mlsys-lab-sogang/SAT?tab=readme-ov-file)
 
@@ -66,6 +66,6 @@ pip install torch
 pip install tensorboard
 pip install requests
 sh compile.sh
-python main_learnable_skewness.py --mode train --task lra-image --random 1001 --name sat --sk 1.7 --ds 1.3
-
+python main_learnable_skewness.py --mode train --task lra-image --random 1001 --name sat --sk 1.7 --ds 1.3 # 训练过程中出现GPU内存不足的问题. 减小batch size后成功.
+python main_inference.py --mode eval --task lra-image --random 1001 --name sat
 ```
