@@ -29,20 +29,21 @@ cmake --build build
 ```shell
 git clone https://github.com/pkuzengqi/Skyformer.git
 cd Skyformer
+
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install 'tensorflow>=2.3.1' 'tensorflow-datasets>=4.0.1' 'tensorboard>=2.3.0'
+
 wget https://storage.googleapis.com/long-range-arena/pathfinder_tfds.gz
 gunzip pathfinder_tfds.gz
 export _PATHFINDER_TFDS_PATH=~/CLionProjects/Skyformer/pathfinder_tfds
+wget https://storage.googleapis.com/long-range-arena/lra_release.gz
 mkdir -p data
 tar -zxvf lra_release.gz -C data
-cd data
-wget https://storage.googleapis.com/long-range-arena/lra_release.gz
-tar zxvf lra-release.gz 
-mkdir lra_processed
-cd ../src
+mkdir -p data/lra_processed
+
+cd src
 python preprocess/create_pathfinder.py
 python preprocess/create_listops.py
 python preprocess/create_retrieval.py
