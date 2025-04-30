@@ -57,6 +57,10 @@ python preprocess/create_cifar10.py # 训练过程中出现内存分配失败. �
 
 ```shell
 # 安装虚拟环境
+
+mkdir -p data
+cp ../Skyformer/data/lra_processed/ data/ -r
+
 sudo apt install python3.12-venv
 python3 -m venv .venv
 source .venv/bin/activate
