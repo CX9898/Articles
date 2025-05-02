@@ -174,14 +174,14 @@ in future architectures."
 也就是说通过以上方式不能准确知道遍历过程中当前 `idx` 下的 `frag.x[idx]` 在实际矩阵块中的哪个位置.
 
 但是实际可以直接通过将同一个warp中的每个线程(lane)储存的元素全部打印出来对照查看就能知道.
-以下列表是当m,n,k都分别设置为16的情况下每个线程储存原始矩阵的位置.
+以下列表是当m,n,k都分别设置为16的情况下每个线程储存原始矩阵C的位置.
 
 > Warp是CUDA中最小的执行单元, 它由一组固定数量的线程组成(在NVIDIA的Fermi架构及以后的GPU中, 一个warp包含32个线程).
 > 同一个warp中, 每个线程被称为一个"lane", 术语来自于"车道"的比喻, 就像在高速公路上, 每个车道可以独立行驶一辆车.
 > 每个lane可以看作是一个独立的执行路径, 它们共享warp的执行状态, 但各自有自己的寄存器和执行流.
 
 ![m16n16k16情况下,部分线程fragment类中储存的原矩阵块C的元素位置.png](img/CUDA_编程使用_Tensor_core_详解/m16n16k16情况下,部分线程fragment类中储存的原矩阵块C的元素位置.png)
-<p style="text-align:center">m16n16k16情况下, 部分线程fragment类中储存的原矩阵块C的元素位置. 行标为laneId, 列标为fragment类的Index. 数据为[row,col]</p>
+<p style="text-align:center">m16n16k16情况下, 部分线程fragment类中储存的原矩阵C块的元素位置. 行标为laneId, 列标为fragment类的Index. 数据为[row,col]</p>
 
 通过上图可以发现一些规律:
 
@@ -195,7 +195,7 @@ in future architectures."
 6. 0到15列数据中, 列数以8为分界线, 每个线程的每两个Index储存连续的2列的元素. 根据规律③的4个线程为一组, 组内第0号线程,
    储存0,1,8,9列元素, 第1号线程储存2,3,10,11列元素, 以此类推.
 
-例如要找到原矩阵块中第1行第12列的是在哪个线程储存, 储存的Index是多少?
+例如要找到原矩阵$C$块中第1行第12列的是在哪个线程储存, 储存的Index是多少?
 可以先**通过行数, 根据第④和第⑤条规律计算出从哪个线程ID开始储存**.
 
 ```C++
@@ -222,13 +222,13 @@ index = isBigCol * 4 + isBigRow * 2 + localCol % 2;
 
 最终得到第1行第12列的数据由fragment类的Index为4的第6号线程储存.
 
-以上规律虽然说可能会在未来的架构中改变, 但是在短时间内大概率不会进行更改. 并且未来更改了也可以根据这样的方式找到计算的方法.
+以上规律虽然说可能会在未来的架构中改变, 但是在很长一段时间内大概率不会进行更改. 并且未来更改了也可以根据这样的方式找到计算的方法.
 
 ---
 
 ### 加载矩阵数据
 
-`load_matrix_sync()` 函数用于从内存加载矩阵的片段到 fragment 类中. 并且**开始前会进行线程同步(sync)操作.**
+`load_matrix_sync()` 函数用于从内存加载矩阵的片段到 fragment 类中. 并且**开始前会进行线程束同步(sync)操作.**
 
 ```C++
 void load_matrix_sync(fragment<...> &a, const T* mptr, unsigned ldm);
@@ -240,7 +240,7 @@ void load_matrix_sync(fragment<...> &a, const T* mptr, unsigned ldm, layout_t la
 - `ldm` : 表示元素在连续行(行主序时)或列(列主序时)在内存中的跨度. 也就是每行/列的元素数量
 - `layout` : 指定矩阵是以行主序或列主序的形式保存在内存中, 必须指定为行主序 : `mem_row_major` 或列主序 : `mem_col_major`
 
-> 注意 : 因为会进行线程同步操作, 此函数必须由 warp 中的所有线程调用.
+> 注意 : 因为会进行线程束同步操作, 此函数必须由 warp 中的所有线程调用.
 
 如果**要加载的块不满足对应的矩阵维度, 结果将出错**. 也就是说要保证输入矩阵块的大小和 fragment 类的参数相匹配.
 例如指定的fragment类的m,n,k分别为32,8,16, 那么加载的矩阵块A的大小必须是32×16, 矩阵块B的大小必须是16×8.
@@ -251,7 +251,7 @@ void load_matrix_sync(fragment<...> &a, const T* mptr, unsigned ldm, layout_t la
 
 ### 矩阵计算
 
-`mma_sync()` 函数进行矩阵乘法累加计算. 会在**开始前进行线程同步(sync)操作.**
+`mma_sync()` 函数进行矩阵乘法累加计算. 会在**开始前进行线程束同步(sync)操作.**
 
 ```C++
 void mma_sync(fragment<...> &d, const fragment<...> &a, const fragment<...> &b, const fragment<...> &c, bool satf=false);
@@ -271,13 +271,13 @@ void mma_sync(fragment<...> &d, const fragment<...> &a, const fragment<...> &b, 
 mma_sync(accFrag, aFrag, bFrag, accFrag);
 ```
 
-> 注意 : 因为会进行线程同步操作, 此函数必须由 warp 中的所有线程调用.
+> 注意 : 因为会进行线程束同步操作, 此函数必须由 warp 中的所有线程调用.
 
 ---
 
 ### 存储矩阵数据
 
-`store_matrix_sync()` 函数与 `load_matrix_sync()` 函数相反, 是将矩阵片段存储回内存中. 也会在开始前进行线程同步(sync)操作.
+`store_matrix_sync()` 函数与 `load_matrix_sync()` 函数相反, 是将矩阵片段存储回内存中. 也会在开始前进行线程束同步(sync)操作.
 
 ```C++
 void store_matrix_sync(T* mptr, const fragment<...> &a, unsigned ldm, layout_t layout);
@@ -288,7 +288,7 @@ void store_matrix_sync(T* mptr, const fragment<...> &a, unsigned ldm, layout_t l
 - `ldm` : 表示元素在连续行(行主序时)或列(列主序时)在内存中的跨度. 也就是每行/列的元素数量
 - `layout` : 指定矩阵是以行主序或列主序的形式保存在内存中, 必须指定为行主序 `mem_row_major` 或列主序 `mem_col_major`
 
-> 注意 : 因为会进行线程同步操作, 此函数必须由 warp 中的所有线程调用
+> 注意 : 因为会进行线程束同步操作, 此函数必须由 warp 中的所有线程调用
 
 ---
 
@@ -382,6 +382,14 @@ store_matrix_sync(cOffsetPtr, accFrag, ldc, wmma::mem_row_major);
 ```
 
 ---
+
+## 结语
+
+CUDA WMMA API是NVIDIA Tensor Core 的核心软件工具之一, 通过WMMA API, 能方便的使用NVIDIA GPU中的Tensor Core. 
+它在设计的初衷就是面向开发者, 以易用性为主, 便于快速集成Tensor Core运算. 除了这种办法, 
+还可以通过调用现有的CUDA库(例如cuSPARSE, cuBLAS等)来间接使用Tensor Core. 如果对汇编语言有了解的话, 
+还可以使用PTX MMA指令直接通过访问底层硬件来实现. 这种办法性能最佳, 且灵活性更高, 但对开发者的要求更高, 需要手动优化内存访问模式, 
+寄存器分配和线程调度.
 
 参考:
 
