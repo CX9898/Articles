@@ -30,7 +30,7 @@ cmake --build build
 git clone https://github.com/pkuzengqi/Skyformer.git
 cd Skyformer
 
-# 1. 下载 Miniconda 安装脚本
+# 准备环境
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 source ~/.bashrc
@@ -44,6 +44,7 @@ pip install tensorflow==2.6 tensorflow-datasets==4.0.1 tensorboard==2.6
 #pip install --upgrade pip
 #pip install 'tensorflow>=2.3.1' 'tensorflow-datasets>=4.0.1' 'tensorboard>=2.3.0'
 
+# 准备数据集
 wget https://storage.googleapis.com/long-range-arena/pathfinder_tfds.gz
 gunzip pathfinder_tfds.gz
 export _PATHFINDER_TFDS_PATH=~/CLionProjects/Skyformer/pathfinder_tfds
@@ -52,6 +53,7 @@ mkdir -p data
 tar -zxvf lra_release.gz -C data
 mkdir -p data/lra_processed
 
+# 处理数据集
 cd src
 python preprocess/create_pathfinder.py
 python preprocess/create_listops.py
