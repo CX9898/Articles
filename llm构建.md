@@ -30,10 +30,19 @@ cmake --build build
 git clone https://github.com/pkuzengqi/Skyformer.git
 cd Skyformer
 
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install 'tensorflow>=2.3.1' 'tensorflow-datasets>=4.0.1' 'tensorboard>=2.3.0'
+# 1. 下载 Miniconda 安装脚本
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+conda create -n skyformer python=3.8
+conda activate skyformer
+pip install -r src/requirements.txt
+pip install tensorflow==2.6 tensorflow-datasets==4.0.1 tensorboard==2.6
+
+#python3 -m venv .venv
+#source .venv/bin/activate
+#pip install --upgrade pip
+#pip install 'tensorflow>=2.3.1' 'tensorflow-datasets>=4.0.1' 'tensorboard>=2.3.0'
 
 wget https://storage.googleapis.com/long-range-arena/pathfinder_tfds.gz
 gunzip pathfinder_tfds.gz
@@ -48,7 +57,7 @@ python preprocess/create_pathfinder.py
 python preprocess/create_listops.py
 python preprocess/create_retrieval.py
 python preprocess/create_text.py
-python preprocess/create_cifar10.py # 训练过程中出现内存分配失败. 限制训练样本数量为10000000后成功.
+python preprocess/create_cifar10.py # 将`train_dataset = train_dataset.repeat()` 这行代码注释掉
 ```
 
 ## 构建SAT模型
@@ -71,7 +80,9 @@ pip install torch
 pip install tensorboard
 pip install requests
 sh compile.sh
+
 python main_learnable_skewness.py --mode train --task lra-image --random 1001 --name sat --sk 1.7 --ds 1.3 # 训练过程中出现GPU内存不足的问题. 减小batch size后成功.
+
 python main_inference.py --mode eval --task lra-image --random 1001 --name sat
 ```
 
