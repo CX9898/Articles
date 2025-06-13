@@ -203,4 +203,8 @@ SAT模型执行通过考虑稀疏性来优化softmax函数, softmax操作的执�
 随着数据序列长度的增加, Transformer模型中多头注意力(MHA)操作的计算复杂度呈二次增长. 因此, 论文开发了一种新颖的稀疏化方法,
 该方法在大幅减少MHA计算所需操作数量的同时, 还能保留序列中数据点之间的重要关系.
 
+论文链接: [Exploring Attention Sparsity to Accelerate Transformer Training on GPUs](https://ieeexplore.ieee.org/abstract/document/10589623)
+
+开源链接: [github.com/mlsys-lab-sogang/SAT](https://github.com/mlsys-lab-sogang/SAT)
+
 ---

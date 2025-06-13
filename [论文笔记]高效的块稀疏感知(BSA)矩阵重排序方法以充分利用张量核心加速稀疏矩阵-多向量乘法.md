@@ -399,6 +399,6 @@ BSA-SpMM与现有的最先进SpMM实现相比, 获得了最高21.99倍的加速.
 
 论文链接: [Accelerated Block-Sparsity-Aware Matrix Reordering for Leveraging Tensor Cores in Sparse Matrix-Multivector Multiplication](https://link.springer.com/chapter/10.1007/978-3-031-69583-4_1)
 
-开源链接: [BSA-SpMM_EURO-PAR-2024](https://github.com/dleunji/BSA-SpMM_EURO-PAR-2024)
+开源链接: [github.com/lej970703/BSA-SpMM_EURO-PAR-2024](https://github.com/dleunji/BSA-SpMM_EURO-PAR-2024)
 
 ---
